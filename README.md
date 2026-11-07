@@ -1,77 +1,135 @@
-Nhóm 1 – Note Management
-Backend + Frontend
-Các chức năng cốt lõi của NoteSpace.
+# NoteSpace – Development Checklist
 
-Issue #1 – Create Note
-- Tạo ghi chú mới.
-- Nhập title và content.
-- Lưu ghi chú vào database.
-Issue #2 – View & Edit Note
-- Hiển thị danh sách ghi chú.
-- Xem nội dung ghi chú.
-- Chỉnh sửa và cập nhật ghi chú.
-Issue #3 – Delete & Restore Note
-- Chuyển ghi chú vào Trash.
-- Khôi phục ghi chú.
-- Xóa ghi chú vĩnh viễn.
+## Project Overview
+NoteSpace is a web-based note-taking application with AI-powered writing assistance.
 
-Nhóm 2 – Search & Organization
-Frontend + Backend
-Issue #4 – Search Notes
-- Tìm kiếm theo title.
-- Tìm kiếm theo content.
-- Hiển thị kết quả tìm kiếm.
-Issue #5 – Pin Notes
-- Ghim ghi chú.
-- Bỏ ghim ghi chú.
-- Hiển thị danh sách Pinned.
-Issue #6 – Categorize Notes
-- Gắn nhãn ghi chú.
-- Hiển thị category.
-- Lọc ghi chú theo nhãn.
+## Team Responsibilities
 
-Nhóm 3 – AI Assistant
-AI + Frontend
-Issue #7 – Summarize Note
-- Tóm tắt nội dung ghi chú.
-- Hiển thị kết quả preview.
-- Cho phép Apply hoặc Cancel.
-Issue #8 – Improve Writing
-- Cải thiện văn phong.
-- Hiển thị nội dung đề xuất.
-- Cho phép áp dụng kết quả.
-Issue #9 – Generate Title
-- Tạo tiêu đề từ nội dung ghi chú.
-- Hiển thị tiêu đề đề xuất.
-- Cho phép áp dụng.
+| Member | Responsibility |
+|---|---|
+| Đặng Vĩnh Quang |  |
+| Lê Tôn Hải |  |
+| Nguyễn Hữu Nhật |  |
+| Nguyễn Trọng Tiến |  |
 
-Nhóm 4 – UI & Settings
-Frontend
-Issue #10 – Responsive UI
-- Desktop, tablet và mobile.
-- Sidebar và navigation.
-- Note cards và editor.
-Issue #11 – Dark Mode
-- Light mode.
-- Dark mode.
-- Lưu lựa chọn theme.
-Issue #12 – Settings Page
-- Quản lý cấu hình.
-- Cấu hình AI provider.
-- Lưu các tùy chọn.
+---
 
-Nhóm 5 – Integration & Quality
-Có thể làm sau
-Issue #13 – Backend API Integration
-- Kết nối frontend với backend.
-- Xử lý API requests.
-- Xử lý lỗi API.
-Issue #14 – Database Schema
-- Thiết kế Note schema.
-- Xác định các trường dữ liệu.
-- Tạo ERD/database documentation.
-Issue #15 – Testing & Optimization
-- Kiểm tra các chức năng.
-- Responsive testing.
-- Google Lighthouse.
-- Error logging.
+## Group 1 – Note Management
+**Assignee: (no one)**
+
+- [ ] #1 Create Note
+  - [ ] Create note form
+  - [ ] Input title and content
+  - [ ] Save note to MongoDB
+
+- [ ] #2 View & Edit Note
+  - [ ] Display note list
+  - [ ] View note content
+  - [ ] Edit and update note
+
+- [ ] #3 Delete & Restore Note
+  - [ ] Move note to Trash
+  - [ ] Restore note
+  - [ ] Permanently delete note
+
+## Group 2 – Search & Organization
+**Assignee: (no one)**
+
+- [ ] #4 Search Notes
+  - [ ] Search by title
+  - [ ] Search by content
+  - [ ] Display search results
+
+- [ ] #5 Pin Notes
+  - [ ] Pin note
+  - [ ] Unpin note
+  - [ ] Display pinned notes
+
+- [ ] #6 Categorize Notes
+  - [ ] Add category/tag
+  - [ ] Display category
+  - [ ] Filter notes by category
+
+## Group 3 – AI Assistant
+**Assignee: (no one)**
+
+- [ ] #7 Summarize Note
+  - [ ] Summarize note content
+  - [ ] Display preview
+  - [ ] Apply or Cancel
+
+- [ ] #8 Improve Writing
+  - [ ] Improve writing style
+  - [ ] Display suggested content
+  - [ ] Apply suggestion
+
+- [ ] #9 Generate Title
+  - [ ] Generate title from content
+  - [ ] Display suggested title
+  - [ ] Apply suggestion
+
+## Group 4 – UI & Settings
+**Assignee: (no one)**
+
+- [ ] #10 Responsive UI
+  - [ ] Desktop layout
+  - [ ] Tablet layout
+  - [ ] Mobile layout
+  - [ ] Sidebar and navigation
+  - [ ] Note cards and editor
+
+- [ ] #11 Dark Mode
+  - [ ] Light mode
+  - [ ] Dark mode
+  - [ ] Save theme preference
+
+- [ ] #12 Settings Page
+  - [ ] Settings interface
+  - [ ] AI provider configuration UI
+  - [ ] Save user preferences
+
+## Group 5 – Integration & Quality
+**Assignee: (no one)**
+
+- [ ] #13 Backend API Integration
+  - [ ] Connect frontend to backend
+  - [ ] Handle API requests
+  - [ ] Handle API errors
+
+- [ ] #14 Database Schema
+  - [ ] Design Note schema
+  - [ ] Define database fields
+  - [ ] Create ERD documentation
+
+- [ ] #15 Testing & Optimization
+  - [ ] Test core functions
+  - [ ] Test responsive layouts
+  - [ ] Run Google Lighthouse
+  - [ ] Basic error logging
+
+---
+
+## Development Notes
+
+- Frontend uses HTML, Tailwind CSS and JavaScript.
+- Backend uses Node.js and Express.js.
+- Database: MongoDB Atlas.
+- Frontend initially uses mock data while backend APIs are being developed.
+- Never commit `.env` or API keys.
+- Test completed features before integration.
+
+## Project Progress
+
+- [ ] Phase 1 – Repository and project setup
+- [ ] Phase 2 – Core note management
+- [ ] Phase 3 – Search and organization
+- [ ] Phase 4 – AI Assistant
+- [ ] Phase 5 – Integration and testing
+- [ ] Phase 6 – Final documentation and demo
+
+## Development Log
+
+| Date | Member | Work completed | Notes |
+|---|---|---|---|
+| | | | |
+| | | | |
