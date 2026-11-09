@@ -149,14 +149,49 @@ Cập nhật bảng này sau khi nhóm thống nhất phân công. Không tự g
 
 ## Yêu cầu trước khi cài đặt
 
-- Git
-- Node.js và npm
-- Cơ sở dữ liệu MongoDB Atlas
+Để cài đặt và chạy NoteSpace trên máy tính cá nhân, cần chuẩn bị các công cụ và tài khoản sau:
+
+### 1. Công cụ cần thiết
+
+- **Git:** Dùng để clone repository và quản lý mã nguồn.
+- **Node.js:** Môi trường chạy JavaScript phía backend. Khuyến nghị sử dụng phiên bản LTS.
+- **npm:** Trình quản lý package, được cài đặt cùng Node.js.
+- **Web browser:** Chrome, Edge hoặc trình duyệt hiện đại tương đương.
+
+### 2. Cơ sở dữ liệu
+
+- **MongoDB Atlas:** Sử dụng cơ sở dữ liệu MongoDB trên nền tảng đám mây.
+- Cần có tài khoản MongoDB Atlas và một database cluster.
+- Cần chuẩn bị MongoDB connection string để cấu hình kết nối backend.
+
+### 3. Cấu hình môi trường
+
+Trước khi chạy backend:
+
+1. Mở thư mục `backend`.
+2. Tạo file `.env` dựa trên `.env.example`.
+3. Cập nhật các biến môi trường cần thiết.
 
 ## Nhật ký phát triển
 
-Thêm một dòng mỗi khi hoàn thành một công việc quan trọng. Sử dụng định dạng ngày `YYYY-MM-DD`.
+Ghi lại các công việc quan trọng trong quá trình phát triển dự án.
 
 | Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
 |---|---|---|---|
-| YYYY-MM-DD |  |  |  |
+| 2026-11-09 | Đặng Vĩnh Quang |  lại các công việc quan trọng trong quá trình phát triển dự án. Sử dụng định dạng ngày YYYY-MM-DD.
+
+Ngày
+
+Thành viên
+
+Công việc đã thực hiện
+
+Ghi chú
+
+2026-11-09
+
+Đặng Vĩnh Quang
+
+Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes.
+
+Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. | Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. |
