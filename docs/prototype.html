@@ -26,6 +26,11 @@ svg{flex:none}
 .row.active{background:var(--act);color:var(--ink)}.row .ico{width:20px;text-align:center;flex:none}.row .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rb{opacity:0;width:22px;height:22px;border-radius:4px;display:grid;place-items:center;flex:none}.row:hover .rb,.row:focus-within .rb{opacity:1}.rb:hover{background:var(--act)}.rb svg{width:16px;height:16px}
 .row.big{padding:8px 6px 8px 10px;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink)}.row.big .rb{opacity:1}.row .dt{font-size:12px;color:var(--mut)}
+.car{width:20px;height:20px;display:grid;place-items:center;border-radius:4px;flex:none;color:var(--mut)}.car:hover{background:var(--act)}.car svg{width:14px;height:14px;transition:transform .15s}.car.open svg{transform:rotate(90deg)}.car.sp{visibility:hidden}
+.cr{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 6px;border-radius:5px;color:var(--mut2)}.cr:hover{background:var(--hov)}.sep{color:var(--mut)}
+.pg{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:4px 6px;border-radius:6px;cursor:pointer;font-weight:500;outline:0}.pg:hover,.pg:focus-visible{background:var(--hov)}.pg .ico{flex:none}.pg .nm{border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pg .dt{font-size:12px;color:var(--mut)}
+.blk[data-t=quote] .tx{border-left:3px solid var(--ink);padding-left:12px;margin-left:4px}.blk[data-t=callout]{background:var(--hov);border-radius:6px;padding:8px 6px;margin:4px 0}.blk[data-t=callout] .mk{display:block}
+.blk[data-t=quote] .tx:empty::before{content:"Quote"}.blk[data-t=callout] .tx:empty::before{content:"Callout"}
 main{margin-left:240px;min-height:100vh;transition:margin .2s}
 body.sb-closed .sidebar{transform:translateX(-100%)}body.sb-closed main{margin-left:0}
 .top{position:sticky;top:0;height:45px;display:flex;align-items:center;gap:2px;padding:0 10px;background:var(--bg);z-index:10}
@@ -141,42 +146,67 @@ document.addEventListener('mousedown',e=>{if(!$('pop').hidden&&!e.target.closest
 
 /* ---------- data helpers ---------- */
 async function patch(n,p){if(!ready){toast('Notes are still loading.');return false}const r=await window.dataSdk.update({...n,...p});if(!r.isOk){toast('Could not save. Please try again.');return false}return true}
-async function setTrash(n,t){if(!n)return;const ok=await patch(n,{trashed:t,updated_at:new Date().toISOString()});if(ok)toast(t?'Moved to Trash.':'Restored.')}
-const noteItems=n=>n.trashed?[{l:'Restore',fn:()=>setTrash(n,false)},{l:'Delete permanently',danger:1,fn:()=>askDel(n)}]:[{l:n.pinned?'Remove from Favorites':'Add to Favorites',fn:()=>patch(n,{pinned:!n.pinned})},{l:'Move to Trash',danger:1,fn:()=>setTrash(n,true)}];
-function askDel(n){if(!n)return;pendDel=n.__backendId;$('cf-t').textContent=`“${nm(n)}” will be removed forever. This can’t be undone.`;mo('cf',true);setTimeout(()=>$('cf-c').focus(),30)}
+async function setTrash(n,t){if(!n)return;
+  const p={trashed:t,updated_at:new Date().toISOString()};
+  if(!t&&n.parent_id&&!par(n))p.parent_id='';
+  const ds=desc(n.__backendId);
+  if(!await patch(n,p))return;
+  for(const c of ds){if(!!c.trashed!==t&&!await patch(c,{trashed:t}))break}
+  toast(t?'Moved to Trash.':'Restored.')}
+const noteItems=n=>n.trashed?[{l:'Restore',fn:()=>setTrash(n,false)},{l:'Delete permanently',danger:1,fn:()=>askDel(n)}]:[{l:'Add sub-page',fn:()=>addSub(n.__backendId)},{l:n.pinned?'Remove from Favorites':'Add to Favorites',fn:()=>patch(n,{pinned:!n.pinned})},{l:'Move to Trash',danger:1,fn:()=>setTrash(n,true)}];
+function askDel(n){if(!n)return;pendDel=n.__backendId;const k=desc(n.__backendId).length;$('cf-t').textContent=`“${nm(n)}”${k?` and its ${k} sub-page${k>1?'s':''}`:''} will be removed forever. This can’t be undone.`;mo('cf',true);setTimeout(()=>$('cf-c').focus(),30)}
 function closeCf(){pendDel=null;mo('cf',false)}
 $('cf-c').onclick=closeCf;$('cf').addEventListener('click',e=>{if(e.target===$('cf'))closeCf()});
 $('cf-d').onclick=async()=>{const n=notes.find(x=>x.__backendId===pendDel);if(!n){closeCf();return}if(!ready){toast('Notes are still loading.');return}
-  const b=$('cf-d');b.disabled=true;const r=await window.dataSdk.delete(n);b.disabled=false;closeCf();toast(r.isOk?'Page deleted permanently.':'Could not delete this page.')};
-async function newPage(){if(!ready){toast('Notes are still loading.');return}if(notes.length>=999){toast('The 999-page limit has been reached.');return}flush();
-  openNew=new Set(notes.map(n=>n.__backendId));
-  const r=await window.dataSdk.create({title:'Untitled',content:'',category:'NOTE',color:'white',icon:'',pinned:false,trashed:false,updated_at:new Date().toISOString()});
-  if(!r.isOk){openNew=null;toast('Could not create the page.')}}
+  const b=$('cf-d');b.disabled=true;let ok=true;for(const x of [...desc(n.__backendId).reverse(),n]){const r=await window.dataSdk.delete(x);if(!r.isOk){ok=false;break}}b.disabled=false;closeCf();toast(ok?'Page deleted permanently.':'Could not delete this page.')};
+async function addSub(pid,blk){if(!ready){toast('Notes are still loading.');return}if(notes.length>=999){toast('The 999-page limit has been reached.');return}flush();if(pid)exp.add(pid);
+  openNew={ids:new Set(notes.map(n=>n.__backendId)),pid,blk};
+  const r=await window.dataSdk.create({title:'Untitled',content:'',category:'NOTE',color:'white',icon:'',pinned:false,trashed:false,parent_id:pid||'',updated_at:new Date().toISOString()});
+  if(!r.isOk){openNew=null;toast('Could not create the page.');if(blk&&blk.isConnected)blk.remove()}}
+const newPage=()=>addSub('');
+async function linkSub(o,nn){
+  const id=nn.__backendId;
+  if(o.pid){
+    if(mode==='page'&&curId===o.pid&&$('blocks')){
+      if(o.blk&&o.blk.isConnected){o.blk.dataset.ref=id;o.blk.querySelector('.pg').innerHTML=pgH(id)}else $('blocks').insertAdjacentHTML('beforeend',bhtml({t:'page',c:0,x:id}));
+      await save()}
+    else{const p=notes.find(x=>x.__backendId===o.pid);if(p)await patch(p,{content:(p.content?p.content+'\n':'')+`[[page:${id}]]`,updated_at:new Date().toISOString()})}}
+  openPage(id)}
+function refreshPg(){document.querySelectorAll('#blocks .blk[data-t=page]').forEach(b=>{const q=b.querySelector('.pg');if(q&&b.dataset.ref!=='pending')q.innerHTML=pgH(b.dataset.ref)})}
 
 /* ---------- sidebar ---------- */
-const rowH=(n,big)=>`<div class="row ${big?'big':''} ${!big&&mode==='page'&&n.__backendId===curId?'active':''}" data-id="${esc(n.__backendId)}" tabindex="0"><span class="ico">${esc(ico(n))}</span><span class="nm">${esc(nm(n))}</span>${big?`<span class="dt">${fdate(n.updated_at)}</span>`:''}<button class="rb" type="button" data-a="menu" aria-label="Page actions"><i data-lucide="ellipsis"></i></button></div>`;
+const kids=id=>notes.filter(n=>n.parent_id===id&&!n.trashed);
+const par=n=>n.parent_id?notes.find(x=>x.__backendId===n.parent_id&&!x.trashed):null;
+const desc=id=>notes.filter(n=>n.parent_id===id).flatMap(c=>[c,...desc(c.__backendId)]);
+const exp=new Set();
+const rowH=(n,big,d=0,nk=0,op=false)=>`<div class="row ${big?'big':''} ${!big&&mode==='page'&&n.__backendId===curId?'active':''}" data-id="${esc(n.__backendId)}" tabindex="0" ${big?'':`style="padding-left:${6+d*14}px"`}>${big?'':`<button class="car ${nk?'':'sp'} ${op?'open':''}" type="button" data-a="tog" aria-label="Expand" aria-expanded="${op}"><i data-lucide="chevron-right"></i></button>`}<span class="ico">${esc(ico(n))}</span><span class="nm">${esc(nm(n))}</span>${big?`<span class="dt">${fdate(n.updated_at)}</span>`:`<button class="rb" type="button" data-a="sub" aria-label="Add a sub-page"><i data-lucide="plus"></i></button>`}<button class="rb" type="button" data-a="menu" aria-label="Page actions"><i data-lucide="ellipsis"></i></button></div>`;
+const treeH=(n,d)=>{const k=kids(n.__backendId),o=exp.has(n.__backendId);return rowH(n,0,d,k.length,o)+(o?k.map(c=>treeH(c,d+1)).join(''):'')};
 function renderSB(){
   const q=$('q').value.trim().toLowerCase();
   const live=notes.filter(n=>!n.trashed&&(nm(n)+' '+(n.content||'')).toLowerCase().includes(q));
-  const fav=live.filter(n=>n.pinned),rest=live.filter(n=>!n.pinned);
+  const fav=live.filter(n=>n.pinned),roots=q?live:notes.filter(n=>!n.trashed&&!par(n));
   $('fav').innerHTML=fav.length?`<div class="sec">Favorites</div>`+fav.map(n=>rowH(n)).join(''):'';
-  $('pages').innerHTML=`<div class="sec">Pages<button type="button" data-a="new" aria-label="New page"><i data-lucide="plus"></i></button></div>`+(rest.map(n=>rowH(n)).join('')||`<div class="row" style="cursor:default">${q?'No results':'No pages'}</div>`);
+  $('pages').innerHTML=`<div class="sec">Pages<button type="button" data-a="new" aria-label="New page"><i data-lucide="plus"></i></button></div>`+(roots.map(n=>q?rowH(n):treeH(n,0)).join('')||`<div class="row" style="cursor:default">${q?'No results':'No pages'}</div>`);
   $('nav-home').classList.toggle('active',mode==='home');$('nav-trash').classList.toggle('active',mode==='trash');icons()}
 $('sbs').addEventListener('click',e=>{
   const a=e.target.closest('[data-a]'),row=e.target.closest('.row[data-id]'),n=row&&notes.find(x=>x.__backendId===row.dataset.id);
   if(a&&a.dataset.a==='new'){newPage();return}
   if(a&&a.dataset.a==='menu'&&n){popMenu(a,noteItems(n));return}
+  if(a&&a.dataset.a==='tog'&&n){const k=n.__backendId;exp.has(k)?exp.delete(k):exp.add(k);renderSB();return}
+  if(a&&a.dataset.a==='sub'&&n){addSub(n.__backendId);return}
   if(row&&n)openPage(n.__backendId)});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('row')){const n=notes.find(x=>x.__backendId===e.target.dataset.id);if(n)openPage(n.__backendId)}});
 $('q').addEventListener('input',renderSB);
 $('new').onclick=newPage;$('nav-home').onclick=showHome;$('nav-trash').onclick=showTrash;
 $('tg').onclick=()=>document.body.classList.toggle('sb-closed');
+$('crumb').addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)openPage(g.dataset.go)});
 
 /* ---------- top bar ---------- */
 function updateTop(msg){
   const pg=mode==='page',n=cur();
   ['ai-btn','fav-btn','more-btn'].forEach(i=>$(i).hidden=!(pg&&n));
-  $('crumb').innerHTML=pg&&n?`<span>${esc(ico(n))}</span><span class="nm">${esc(($('title')&&$('title').textContent.trim())||'Untitled')}</span>`:`<span class="nm">${mode==='trash'?'Trash':'Home'}</span>`;
+  const anc=[];for(let q=n&&par(n),i=0;q&&i<10;q=par(q),i++)anc.unshift(q);
+  $('crumb').innerHTML=pg&&n?anc.map(a=>`<button class="cr" type="button" data-go="${esc(a.__backendId)}">${esc(ico(a))} ${esc(nm(a))}</button><span class="sep">/</span>`).join('')+`<span>${esc(ico(n))}</span><span class="nm">${esc(($('title')&&$('title').textContent.trim())||'Untitled')}</span>`:`<span class="nm">${mode==='trash'?'Trash':'Home'}</span>`;
   $('edtop').textContent=msg||(pg&&n?'Edited '+fdate(n.updated_at):'');
   if(pg&&n){$('fav-btn').classList.toggle('on',!!n.pinned);$('ai-btn').hidden=ro;if($('ed'))$('ed').textContent=fdate(n.updated_at)}}
 $('fav-btn').onclick=()=>{const n=cur();if(n)patch(n,{pinned:!n.pinned})};
@@ -189,26 +219,30 @@ function showHome(){flush();mode='home';curId=null;aiRes=null;
   $('view').innerHTML=`<div class="page" style="padding-top:40px"><h1 class="hello">Welcome to NoteSpace</h1><p class="sub">Pick up where you left off, or start a new page.</p><div class="sec" style="padding-left:0">Recently edited</div>${live.map(n=>rowH(n,1)).join('')||'<div class="empty">No pages yet.</div>'}<p style="margin-top:20px"><button class="btn pri" type="button" data-a="new">New page</button></p></div>`;
   updateTop();renderSB()}
 function showTrash(){flush();mode='trash';curId=null;aiRes=null;
-  const t=notes.filter(n=>n.trashed);
+  const t=notes.filter(n=>n.trashed&&!(n.parent_id&&notes.some(x=>x.__backendId===n.parent_id&&x.trashed)));
   $('view').innerHTML=`<div class="page" style="padding-top:40px"><h1 class="hello">Trash</h1><p class="sub">Restore a page, or delete it permanently from the ⋯ menu.</p>${t.map(n=>rowH(n,1)).join('')||'<div class="empty">Trash is empty.</div>'}</div>`;
   updateTop();renderSB()}
 /* ---------- blocks ---------- */
 function parse(s){return (s||'').split('\n').map(l=>{let t='p',c=0,x=l;
-  if(l.startsWith('## ')){t='h2';x=l.slice(3)}else if(l.startsWith('# ')){t='h1';x=l.slice(2)}else if(/^\[[ x]\] /.test(l)){t='todo';c=l[1]==='x'?1:0;x=l.slice(4)}else if(l.startsWith('- ')){t='bullet';x=l.slice(2)}
+  if(l.startsWith('## ')){t='h2';x=l.slice(3)}else if(l.startsWith('# ')){t='h1';x=l.slice(2)}else if(/^\[[ x]\] /.test(l)){t='todo';c=l[1]==='x'?1:0;x=l.slice(4)}else if(l.startsWith('- ')){t='bullet';x=l.slice(2)}else if(l.startsWith('> ')){t='quote';x=l.slice(2)}else if(l.startsWith('[!] ')){t='callout';x=l.slice(4)}else if(/^\[\[page:.+\]\]$/.test(l)){t='page';x=l.slice(7,-2)}
   return{t,c,x}})}
-const PFX={p:'',h1:'# ',h2:'## ',bullet:'- '};
-const bhtml=b=>`<div class="blk" data-t="${b.t}" data-c="${b.c}"><span class="mk">${b.t==='todo'?'<span class="cb" role="checkbox" aria-label="Done"></span>':'•'}</span><div class="tx" contenteditable="${ro?'false':'plaintext-only'}">${esc(b.x)}</div></div>`;
-function ser(){const r=[...document.querySelectorAll('#blocks .blk')].map(b=>{const t=b.dataset.t,x=b.querySelector('.tx').textContent.replace(/\n/g,' ');return t==='todo'?`[${b.dataset.c==='1'?'x':' '}] ${x}`:PFX[t]+x});while(r.length&&r[r.length-1]==='')r.pop();return r.join('\n')}
+const PFX={p:'',h1:'# ',h2:'## ',bullet:'- ',quote:'> ',callout:'[!] '};
+const mkH=t=>t==='todo'?'<span class="cb" role="checkbox" aria-label="Done"></span>':t==='bullet'?'•':t==='callout'?'💡':'';
+const pgH=ref=>{const c=notes.find(x=>x.__backendId===ref);return ref==='pending'?'<span class="nm">Creating…</span>':`<span class="ico">${c?esc(ico(c)):'📄'}</span><span class="nm">${c?esc(nm(c)):'Deleted page'}</span>${c&&c.trashed?'<span class="dt">in Trash</span>':''}`};
+const bhtml=b=>b.t==='page'?`<div class="blk" data-t="page" data-ref="${esc(b.x)}" data-c="0"><span class="mk"></span><div class="pg" tabindex="0" role="link" contenteditable="false">${pgH(b.x)}</div></div>`:`<div class="blk" data-t="${b.t}" data-c="${b.c}"><span class="mk">${mkH(b.t)}</span><div class="tx" contenteditable="${ro?'false':'plaintext-only'}">${esc(b.x)}</div></div>`;
+function ser(){const r=[...document.querySelectorAll('#blocks .blk')].map(b=>{const t=b.dataset.t;if(t==='page')return b.dataset.ref==='pending'?null:`[[page:${b.dataset.ref}]]`;const x=b.querySelector('.tx').textContent.replace(/\n/g,' ');return t==='todo'?`[${b.dataset.c==='1'?'x':' '}] ${x}`:PFX[t]+x}).filter(x=>x!==null);while(r.length&&r[r.length-1]==='')r.pop();return r.join('\n')}
 function caretOff(el){const s=getSelection();if(!s.rangeCount)return 0;const a=document.createRange();a.selectNodeContents(el);a.setEnd(s.getRangeAt(0).startContainer,s.getRangeAt(0).startOffset);return a.toString().length}
 function focusAt(el,off){el.focus();const t=el.firstChild,r=document.createRange();if(t)r.setStart(t,Math.min(off,t.length));else r.setStart(el,0);r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r)}
 const focusEnd=el=>focusAt(el,el.textContent.length);
+const txOf=b=>b.querySelector('.tx')||b.querySelector('.pg'),fx=el=>el.classList.contains('pg')?el.focus():focusEnd(el),fs=el=>el.classList.contains('pg')?el.focus():focusAt(el,0);
 const atStart=el=>getSelection().isCollapsed&&caretOff(el)===0,atEnd=el=>getSelection().isCollapsed&&caretOff(el)===el.textContent.length;
 const addBlock=(t,after,x='')=>{after.insertAdjacentHTML('afterend',bhtml({t,c:0,x}));return after.nextElementSibling};
-function setType(b,t){b.dataset.t=t;b.dataset.c='0';b.querySelector('.mk').innerHTML=t==='todo'?'<span class="cb" role="checkbox" aria-label="Done"></span>':'•';sched()}
+function setType(b,t){b.dataset.t=t;b.dataset.c='0';b.querySelector('.mk').innerHTML=mkH(t);sched()}
 
 function openPage(id){
   flush();const n=notes.find(x=>x.__backendId===id);if(!n){showHome();return}
   mode='page';curId=id;aiRes=null;ro=!!n.trashed;closePop();
+  for(let q=par(n),i=0;q&&i<10;q=par(q),i++)exp.add(q.__backendId);
   if(innerWidth<=760)document.body.classList.add('sb-closed');
   const ce=ro?'false':'plaintext-only';
   $('view').innerHTML=`<div class="page">${ro?`<div class="aibox banner"><span>This page is in Trash.</span><span class="acts"><button class="btn" type="button" data-a="restore">Restore</button><button class="btn danger" type="button" data-a="del">Delete permanently</button></span></div>`:''}
@@ -229,7 +263,7 @@ async function save(){
   const ok=await patch(n,{title,content,category,updated_at:new Date().toISOString()});if(!ok)updateTop('Not saved')}
 
 /* ---------- editor events ---------- */
-const CMDS=[{k:'p',t:'Text',d:'Plain paragraph',i:'Aa'},{k:'h1',t:'Heading 1',d:'Big section heading',i:'H1'},{k:'h2',t:'Heading 2',d:'Medium heading',i:'H2'},{k:'todo',t:'To-do list',d:'Track tasks',i:'☑'},{k:'bullet',t:'Bulleted list',d:'Simple list',i:'•'},{k:'ai:summary',t:'AI: Summarize',d:'Summary of this page',i:'✦'},{k:'ai:improve',t:'AI: Improve writing',d:'Polish the text',i:'✦'},{k:'ai:title',t:'AI: Suggest title',d:'Generate a title',i:'✦'}];
+const CMDS=[{k:'p',t:'Text',d:'Plain paragraph',i:'Aa'},{k:'h1',t:'Heading 1',d:'Big section heading',i:'H1'},{k:'h2',t:'Heading 2',d:'Medium heading',i:'H2'},{k:'todo',t:'To-do list',d:'Track tasks',i:'☑'},{k:'bullet',t:'Bulleted list',d:'Simple list',i:'•'},{k:'quote',t:'Quote',d:'Capture a quote',i:'❝'},{k:'callout',t:'Callout',d:'Make writing stand out',i:'💡'},{k:'page',t:'Page',d:'Create a sub-page inside this page',i:'📄'},{k:'ai:summary',t:'AI: Summarize',d:'Summary of this page',i:'✦'},{k:'ai:improve',t:'AI: Improve writing',d:'Polish the text',i:'✦'},{k:'ai:title',t:'AI: Suggest title',d:'Generate a title',i:'✦'}];
 function openSlash(b,q){
   const items=CMDS.filter(c=>c.t.toLowerCase().includes(q.toLowerCase())&&(S.aiEnabled||!c.k.startsWith('ai:')));
   if(!items.length){closePop();return}
@@ -237,10 +271,17 @@ function openSlash(b,q){
   p.innerHTML=items.map((c,i)=>`<button type="button" data-s="${i}" class="${i?'':'sel'}"><span class="ic">${c.i}</span><span><div>${c.t}</div><div class="d">${c.d}</div></span></button>`).join('');p.hidden=false;placePop(p,b)}
 function slashMove(d){slash.i=(slash.i+d+slash.items.length)%slash.items.length;[...$('pop').children].forEach((x,i)=>x.classList.toggle('sel',i===slash.i))}
 function slashPick(){const{b,items,i}=slash,c=items[i];closePop();const tx=b.querySelector('.tx');tx.textContent='';
+  if(c.k==='page'){if(mode!=='page'||ro)return;b.insertAdjacentHTML('afterend',bhtml({t:'page',c:0,x:'pending'}));const nb=b.nextElementSibling;nb.insertAdjacentHTML('afterend',bhtml({t:'p',c:0,x:''}));b.remove();addSub(curId,nb);return}
   if(c.k.startsWith('ai:'))runAI(c.k.slice(3));else setType(b,c.k);focusAt(tx,0);sched()}
 const V=$('view');
 V.addEventListener('keydown',e=>{
-  if(e.target.id==='title'&&e.key==='Enter'){e.preventDefault();const f=document.querySelector('#blocks .tx');f&&focusAt(f,0);return}
+  if(e.target.id==='title'&&e.key==='Enter'){e.preventDefault();const f=$('blocks').firstElementChild;f&&fs(txOf(f));return}
+  const pgEl=e.target.closest&&e.target.closest('.pg');
+  if(pgEl){const b=pgEl.parentElement;
+    if(e.key==='Enter'){e.preventDefault();if(b.dataset.ref!=='pending')openPage(b.dataset.ref);return}
+    if((e.key==='Backspace'||e.key==='Delete')&&!ro){e.preventDefault();const nx=b.nextElementSibling||b.previousElementSibling;b.remove();if(!$('blocks').children.length)$('blocks').innerHTML=bhtml({t:'p',c:0,x:''});else if(nx)fx(txOf(nx));sched();return}
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){const o=e.key==='ArrowDown'?b.nextElementSibling:b.previousElementSibling;if(o){e.preventDefault();fs(txOf(o))}}
+    return}
   const tx=e.target.closest&&e.target.closest('.tx');if(!tx||!tx.closest('#blocks'))return;const b=tx.parentElement;
   if(slash){if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();slashMove(e.key==='ArrowDown'?1:-1);return}if(e.key==='Enter'){e.preventDefault();slashPick();return}if(e.key==='Escape'){closePop();return}}
   if(e.key==='Enter'){e.preventDefault();const t=b.dataset.t,full=tx.textContent;
@@ -248,15 +289,15 @@ V.addEventListener('keydown',e=>{
     const off=caretOff(tx);tx.textContent=full.slice(0,off);const nb=addBlock(t==='bullet'||t==='todo'?t:'p',b,full.slice(off));focusAt(nb.querySelector('.tx'),0);sched()}
   else if(e.key==='Backspace'&&atStart(tx)){
     if(b.dataset.t!=='p'){e.preventDefault();setType(b,'p');return}
-    const pv=b.previousElementSibling;if(pv){e.preventDefault();const p=pv.querySelector('.tx'),len=p.textContent.length;p.textContent+=tx.textContent;b.remove();focusAt(p,len);sched()}}
-  else if(e.key==='ArrowUp'&&atStart(tx)){const p=b.previousElementSibling;if(p){e.preventDefault();focusEnd(p.querySelector('.tx'))}}
-  else if(e.key==='ArrowDown'&&atEnd(tx)){const x=b.nextElementSibling;if(x){e.preventDefault();focusAt(x.querySelector('.tx'),0)}}});
+    const pv=b.previousElementSibling;if(pv){e.preventDefault();const p=pv.querySelector('.tx');if(!p){if(!tx.textContent){b.remove();pv.querySelector('.pg').focus();sched()}return}const len=p.textContent.length;p.textContent+=tx.textContent;b.remove();focusAt(p,len);sched()}}
+  else if(e.key==='ArrowUp'&&atStart(tx)){const p=b.previousElementSibling;if(p){e.preventDefault();fx(txOf(p))}}
+  else if(e.key==='ArrowDown'&&atEnd(tx)){const x=b.nextElementSibling;if(x){e.preventDefault();fs(txOf(x))}}});
 V.addEventListener('input',e=>{
   if(e.target.id==='title'){sched();updateTop('Saving…');return}
   if(e.target.id==='tag'){sched();return}
   const tx=e.target.closest&&e.target.closest('.tx');if(!tx||!tx.closest('#blocks'))return;const b=tx.parentElement;
   let v=tx.textContent.replace(/\u00a0/g,' ');
-  const m=b.dataset.t==='p'&&[['## ','h2'],['# ','h1'],['- ','bullet'],['* ','bullet'],['[] ','todo'],['[ ] ','todo']].find(x=>v.startsWith(x[0]));
+  const m=b.dataset.t==='p'&&[['## ','h2'],['# ','h1'],['> ','quote'],['- ','bullet'],['* ','bullet'],['[] ','todo'],['[ ] ','todo']].find(x=>v.startsWith(x[0]));
   if(m){tx.textContent=v.slice(m[0].length);setType(b,m[1]);focusAt(tx,0);return}
   if(v.startsWith('/')&&!v.includes(' '))openSlash(b,v.slice(1));else if(slash)closePop();
   sched()});
@@ -274,6 +315,7 @@ V.addEventListener('click',e=>{
     if(k==='restore'){setTrash(cur(),false);return}
     if(k==='del'){askDel(cur());return}}
   if(row&&n){openPage(n.__backendId);return}
+  const pgc=e.target.closest('.pg');if(pgc){const r=pgc.parentElement.dataset.ref;if(r&&r!=='pending')openPage(r);return}
   const ai=e.target.closest('[data-ai]');if(ai){aiAct(ai.dataset.ai);return}
   const pi=e.target.closest('#pico');if(pi&&!ro){const c=cur();popMenu(pi,EMO.map(m=>({html:m,fn:()=>patch(c,{icon:m})})),'emo');return}
   if(e.target.closest('#tail')){const t=[...document.querySelectorAll('#blocks .tx')].pop();t&&focusEnd(t)}});
@@ -317,9 +359,9 @@ icons();showHome();
   if(!window.dataSdk){toast('Notes could not load. Please reopen this page.');return}
   const r=await window.dataSdk.init({onDataChanged(data){
     notes=data;
-    if(openNew){const nn=notes.find(n=>!openNew.has(n.__backendId));if(nn){openNew=null;openPage(nn.__backendId);return}}
+    if(openNew){const nn=notes.find(n=>!openNew.ids.has(n.__backendId));if(nn){const o=openNew;openNew=null;linkSub(o,nn);return}}
     if(first){first=false;const l=notes.filter(n=>!n.trashed).sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at))[0];if(l){openPage(l.__backendId);return}}
-    if(mode==='page'){const n=cur();if(!n)showHome();else if(!!n.trashed!==ro)openPage(curId);else{updateTop();renderSB()}}
+    if(mode==='page'){const n=cur();if(!n)showHome();else if(!!n.trashed!==ro)openPage(curId);else{updateTop();renderSB();refreshPg()}}
     else if(mode==='trash')showTrash();else showHome()}});
   ready=r.isOk;if(!ready)toast('Notes could not load. Please reopen this page.');
 })();
