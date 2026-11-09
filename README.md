@@ -1,135 +1,162 @@
-# NoteSpace – Development Checklist
+# NoteSpace
 
-## Project Overview
-NoteSpace is a web-based note-taking application with AI-powered writing assistance.
+Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, sắp xếp và quản lý ghi chú. Ứng dụng hỗ trợ trang con nhiều cấp, tìm kiếm và các chức năng hỗ trợ viết bằng AI.
 
-## Team Responsibilities
+## Mục lục
 
-| Member | Responsibility |
+- [Các chức năng](#các-chức-năng)
+- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
+- [Cấu trúc dự án](#cấu-trúc-dự-án)
+- [Phân công thành viên](#phân-công-thành-viên)
+- [Yêu cầu trước khi cài đặt](#yêu-cầu-trước-khi-cài-đặt)
+- [Nhật ký phát triển](#nhật-ký-phát-triển)
+
+## Các chức năng
+
+### 1. Quản lý ghi chú
+
+- [ ] Tạo trang/ghi chú
+- [ ] Chỉnh sửa tiêu đề và nội dung trang
+- [ ] Tự động lưu thay đổi
+- [ ] Chuyển trang vào Thùng rác
+- [ ] Khôi phục trang từ Thùng rác
+- [ ] Xóa trang vĩnh viễn
+- [ ] Lưu trữ ghi chú thông qua backend và cơ sở dữ liệu
+- [ ] Bổ sung kiểm tra dữ liệu đầu vào và xử lý lỗi API
+
+### 2. Trang con và điều hướng
+
+- [ ] Tạo trang con từ một trang cha
+- [ ] Hiển thị cấu trúc trang phân cấp ở thanh điều hướng bên
+- [ ] Mở rộng và thu gọn danh sách trang con
+- [ ] Hiển thị đường dẫn điều hướng (breadcrumbs)
+- [ ] Chuyển về trang cha thông qua breadcrumbs
+- [ ] Hỗ trợ nhiều cấp trang con
+- [ ] Lưu quan hệ cha-con thông qua backend và cơ sở dữ liệu
+- [ ] Kiểm thử cấu trúc trang con sau khi tải lại trang và qua các phiên sử dụng
+
+### 3. Tìm kiếm và sắp xếp
+
+- [ ] Tìm kiếm theo tiêu đề
+- [ ] Tìm kiếm theo nội dung
+- [ ] Ghim và bỏ ghim trang
+- [ ] Hiển thị các trang đã ghim
+- [ ] Thêm thẻ/nhãn văn bản cho trang
+- [ ] Lọc trang theo thẻ/nhãn
+- [ ] Lưu dữ liệu tìm kiếm, ghim và phân loại thông qua backend
+
+### 4. Trình soạn thảo nội dung
+
+- [ ] Chỉnh sửa nội dung đoạn văn
+- [ ] Thêm tiêu đề
+- [ ] Thêm danh sách công việc (to-do)
+- [ ] Thêm danh sách gạch đầu dòng
+- [ ] Thêm trích dẫn và khối ghi chú nổi bật (callout)
+- [ ] Thêm khối nội dung bằng lệnh dấu gạch chéo (slash command)
+- [ ] Kiểm tra việc chuyển đổi và lưu nội dung trình soạn thảo vào cơ sở dữ liệu
+
+### 5. Trợ lý AI
+
+- [ ] Chức năng tóm tắt nội dung
+- [ ] Chức năng cải thiện cách diễn đạt
+- [ ] Chức năng đề xuất tiêu đề
+- [ ] Kết nối trợ lý AI với một dịch vụ AI thực tế
+- [ ] Tải và quản lý cấu hình nhà cung cấp AI một cách an toàn
+- [ ] Xử lý lỗi API và trạng thái đang tải
+- [ ] Cho phép người dùng xem trước, áp dụng hoặc hủy nội dung AI đề xuất
+
+### 6. Giao diện và cài đặt
+
+- [ ] Giao diện sáng
+- [ ] Giao diện tối
+- [ ] Lưu tùy chọn giao diện bằng bộ nhớ cục bộ
+- [ ] Thanh điều hướng bên có khả năng thích ứng
+- [ ] Giao diện cài đặt
+- [ ] Các trường cấu hình nhà cung cấp AI trong phần cài đặt
+- [ ] Kiểm tra giao diện trên máy tính, máy tính bảng và điện thoại
+- [ ] Kết nối phần cài đặt với ứng dụng đã tích hợp
+- [ ] Kiểm tra khả năng truy cập và điều hướng bằng bàn phím
+
+## Công nghệ sử dụng
+
+| Thành phần | Công nghệ/định hướng hiện tại |
+|---|---|
+| Frontend | HTML, CSS và JavaScript |
+| Backend | Node.js và Express.js |
+| Cơ sở dữ liệu | MongoDB Atlas (đã thay đổi thay vì sử dụng MySQL) |
+| AI |  |
+| Quản lý mã nguồn | Git |
+
+## Cấu trúc dự án
+
+```text
+basic-web-note/
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── aiController.js
+│   │   └── noteController.js
+│   ├── middleware/
+│   │   └── errorHandler.js
+│   ├── models/
+│   │   └── Note.js
+│   ├── routes/
+│   │   ├── aiRoutes.js
+│   │   └── noteRoutes.js
+│   ├── services/
+│   │   └── aiService.js
+│   ├── .env.example
+│   ├── package-lock.json
+│   ├── package.json
+│   └── server.js
+├── docs/
+│   ├── ERD.md
+│   └── notespace_final.html
+├── frontend/
+│   ├── assets/
+│   ├── css/
+│   │   ├── responsive.css
+│   │   └── style.css
+│   ├── js/
+│   │   ├── ai.js
+│   │   ├── app.js
+│   │   ├── notes.js
+│   │   ├── search.js
+│   │   └── settings.js
+│   ├── pages/
+│   │   ├── all-notes.html
+│   │   ├── pinned.html
+│   │   ├── settings.html
+│   │   └── trash.html
+│   └── index.html
+├── .gitignore
+└── README.md
+```
+
+Cập nhật sơ đồ cấu trúc này khi có tệp hoặc thư mục được thêm, xóa hay đổi tên. Đây là cấu trúc dự kiến; cần điều chỉnh để khớp với cấu trúc thực tế của repository.
+
+## Phân công thành viên
+
+| Thành viên | Công việc phụ trách |
 |---|---|
 | Đặng Vĩnh Quang |  |
 | Lê Tôn Hải |  |
 | Nguyễn Hữu Nhật |  |
 | Nguyễn Trọng Tiến |  |
 
----
+Cập nhật bảng này sau khi nhóm thống nhất phân công. Không tự gán nhiệm vụ khi chưa có xác nhận.
 
-## Group 1 – Note Management
-**Assignee: (no one)**
+## Yêu cầu trước khi cài đặt
 
-- [ ] #1 Create Note
-  - [ ] Create note form
-  - [ ] Input title and content
-  - [ ] Save note to MongoDB
+- Git
+- Node.js và npm
+- Cơ sở dữ liệu MongoDB Atlas
 
-- [ ] #2 View & Edit Note
-  - [ ] Display note list
-  - [ ] View note content
-  - [ ] Edit and update note
+## Nhật ký phát triển
 
-- [ ] #3 Delete & Restore Note
-  - [ ] Move note to Trash
-  - [ ] Restore note
-  - [ ] Permanently delete note
+Thêm một dòng mỗi khi hoàn thành một công việc quan trọng. Sử dụng định dạng ngày `YYYY-MM-DD`.
 
-## Group 2 – Search & Organization
-**Assignee: (no one)**
-
-- [ ] #4 Search Notes
-  - [ ] Search by title
-  - [ ] Search by content
-  - [ ] Display search results
-
-- [ ] #5 Pin Notes
-  - [ ] Pin note
-  - [ ] Unpin note
-  - [ ] Display pinned notes
-
-- [ ] #6 Categorize Notes
-  - [ ] Add category/tag
-  - [ ] Display category
-  - [ ] Filter notes by category
-
-## Group 3 – AI Assistant
-**Assignee: (no one)**
-
-- [ ] #7 Summarize Note
-  - [ ] Summarize note content
-  - [ ] Display preview
-  - [ ] Apply or Cancel
-
-- [ ] #8 Improve Writing
-  - [ ] Improve writing style
-  - [ ] Display suggested content
-  - [ ] Apply suggestion
-
-- [ ] #9 Generate Title
-  - [ ] Generate title from content
-  - [ ] Display suggested title
-  - [ ] Apply suggestion
-
-## Group 4 – UI & Settings
-**Assignee: (no one)**
-
-- [ ] #10 Responsive UI
-  - [ ] Desktop layout
-  - [ ] Tablet layout
-  - [ ] Mobile layout
-  - [ ] Sidebar and navigation
-  - [ ] Note cards and editor
-
-- [ ] #11 Dark Mode
-  - [ ] Light mode
-  - [ ] Dark mode
-  - [ ] Save theme preference
-
-- [ ] #12 Settings Page
-  - [ ] Settings interface
-  - [ ] AI provider configuration UI
-  - [ ] Save user preferences
-
-## Group 5 – Integration & Quality
-**Assignee: (no one)**
-
-- [ ] #13 Backend API Integration
-  - [ ] Connect frontend to backend
-  - [ ] Handle API requests
-  - [ ] Handle API errors
-
-- [ ] #14 Database Schema
-  - [ ] Design Note schema
-  - [ ] Define database fields
-  - [ ] Create ERD documentation
-
-- [ ] #15 Testing & Optimization
-  - [ ] Test core functions
-  - [ ] Test responsive layouts
-  - [ ] Run Google Lighthouse
-  - [ ] Basic error logging
-
----
-
-## Development Notes
-
-- Frontend uses HTML, Tailwind CSS and JavaScript.
-- Backend uses Node.js and Express.js.
-- Database: MongoDB Atlas.
-- Frontend initially uses mock data while backend APIs are being developed.
-- Never commit `.env` or API keys.
-- Test completed features before integration.
-
-## Project Progress
-
-- [ ] Phase 1 – Repository and project setup
-- [ ] Phase 2 – Core note management
-- [ ] Phase 3 – Search and organization
-- [ ] Phase 4 – AI Assistant
-- [ ] Phase 5 – Integration and testing
-- [ ] Phase 6 – Final documentation and demo
-
-## Development Log
-
-| Date | Member | Work completed | Notes |
+| Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
 |---|---|---|---|
-| | | | |
-| | | | |
+| YYYY-MM-DD |  |  |  |
