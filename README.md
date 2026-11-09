@@ -178,4 +178,4 @@ Ghi lại các công việc quan trọng trong quá trình phát triển dự á
 
 | Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
 |---|---|---|---|
-| 2026-11-09 | Đặng Vĩnh Quang |  lại các công việc quan trọng trong quá trình phát triển dự án. Sử dụng định dạng ngày YYYY-MM-DD.
+| 2026-11-09 | Đặng Vĩnh Quang |  lại các công việc quan trọng trong quá trình phát triển dự án. Sử dụng định dạng ngày YYYY-MM-DD. |
