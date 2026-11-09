@@ -179,19 +179,3 @@ Ghi lại các công việc quan trọng trong quá trình phát triển dự á
 | Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
 |---|---|---|---|
 | 2026-11-09 | Đặng Vĩnh Quang |  lại các công việc quan trọng trong quá trình phát triển dự án. Sử dụng định dạng ngày YYYY-MM-DD.
-
-Ngày
-
-Thành viên
-
-Công việc đã thực hiện
-
-Ghi chú
-
-2026-11-09
-
-Đặng Vĩnh Quang
-
-Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes.
-
-Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. | Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. |
