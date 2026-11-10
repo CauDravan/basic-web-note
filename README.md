@@ -2,6 +2,8 @@
 
 Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, sắp xếp và quản lý ghi chú. Ứng dụng hỗ trợ trang con nhiều cấp, tìm kiếm và các chức năng hỗ trợ viết bằng AI.
 
+deploy trên: https://basic-web-note.vercel.app/
+
 ## Mục lục
 
 - [Các chức năng](#các-chức-năng)
@@ -91,47 +93,51 @@
 
 ```text
 basic-web-note/
-├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── controllers/
-│   │   ├── aiController.js
-│   │   └── noteController.js
-│   ├── middleware/
-│   │   └── errorHandler.js
-│   ├── models/
-│   │   └── Note.js
-│   ├── routes/
-│   │   ├── aiRoutes.js
-│   │   └── noteRoutes.js
-│   ├── services/
-│   │   └── aiService.js
-│   ├── .env.example
-│   ├── package-lock.json
-│   ├── package.json
-│   └── server.js
-├── docs/
-│   ├── ERD.md
-│   └── notespace_final.html
-├── frontend/
-│   ├── assets/
-│   ├── css/
-│   │   ├── responsive.css
-│   │   └── style.css
-│   ├── js/
-│   │   ├── ai.js
-│   │   ├── app.js
-│   │   ├── notes.js
-│   │   ├── search.js
-│   │   └── settings.js
-│   ├── pages/
-│   │   ├── all-notes.html
-│   │   ├── pinned.html
-│   │   ├── settings.html
-│   │   └── trash.html
-│   └── index.html
-├── .gitignore
-└── README.md
+├─ backend/
+│  ├─ api/
+│  │  └─ index.js
+│  ├─ config/
+│  │  └─ db.js
+│  ├─ controllers/
+│  │  ├─ aiController.js
+│  │  └─ noteController.js
+│  ├─ middleware/
+│  │  └─ errorHandler.js
+│  ├─ models/
+│  │  └─ Note.js
+│  ├─ routes/
+│  │  ├─ aiRoutes.js
+│  │  └─ noteRoutes.js
+│  ├─ services/
+│  │  └─ aiService.js
+│  ├─ .env
+│  ├─ .env.example
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ server.js
+│  └─ vercel.json
+├─ docs/
+│  └─ prototype.html
+├─ frontend/
+│  ├─ assets/
+│  ├─ css/
+│  │  ├─ responsive.css
+│  │  └─ style.css
+│  ├─ js/
+│  │  ├─ ai.js
+│  │  ├─ api.js
+│  │  ├─ app.js
+│  │  ├─ notes.js
+│  │  ├─ search.js
+│  │  └─ settings.js
+│  ├─ pages/
+│  │  ├─ all-notes.html
+│  │  ├─ pinned.html
+│  │  ├─ settings.html
+│  │  └─ trash.html
+│  └─ index.html
+├─ .gitignore
+└─ README.md
 ```
 
 Cập nhật sơ đồ cấu trúc này khi có tệp hoặc thư mục được thêm, xóa hay đổi tên. Đây là cấu trúc dự kiến; cần điều chỉnh để khớp với cấu trúc thực tế của repository.
@@ -178,4 +184,5 @@ Ghi lại các công việc quan trọng trong quá trình phát triển dự á
 
 | Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
 |---|---|---|---|
-| 2026-11-09 | Đặng Vĩnh Quang |  Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes. | Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. |
+| 2026-11-09 | Đặng Vĩnh Quang | Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes. |  |
+| 2026-11-10 | Đặng Vĩnh Quang | Xây dựng frontend, Kết nối frontend với backend, Deploy lên Vercel |
