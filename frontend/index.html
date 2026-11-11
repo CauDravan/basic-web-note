@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>NoteSpace</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <aside class="sidebar" aria-label="Main sidebar">
+    <div class="ws">
+      <span class="av">N</span>
+      <span>NoteSpace</span>
+    </div>
+
+    <label class="sb-item sb-search" for="search-input">
+      <i data-lucide="search"></i>
+      <input id="search-input" type="search" placeholder="Search notes..." autocomplete="off" aria-label="Search notes">
+    </label>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <a class="nav-link active" href="index.html">
+        <i data-lucide="house"></i><span>All Notes</span>
+      </a>
+      <a class="nav-link" href="pages/pinned.html">
+        <i data-lucide="star"></i><span>Pinned</span>
+      </a>
+      <a class="nav-link" href="pages/trash.html">
+        <i data-lucide="trash-2"></i><span>Trash</span>
+      </a>
+    </nav>
+
+    <div class="sbs">
+      <div class="sec">Pages</div>
+      <div id="sidebar-notes">
+        <!-- Optional note navigation items can be rendered here by JavaScript. -->
+      </div>
+    </div>
+
+    <button id="new-note-btn" class="sb-item" type="button">
+      <i data-lucide="square-pen"></i><span>New note</span>
+    </button>
+    <a class="nav-link" href="pages/settings.html">
+      <i data-lucide="settings"></i><span>Settings</span>
+    </a>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <button class="tb" id="sidebar-toggle" type="button" aria-label="Toggle sidebar">
+        <i data-lucide="panel-left"></i>
+      </button>
+      <div class="crumb"><span class="note-icon">📝</span><span class="nm">All Notes</span></div>
+      <span class="edited" id="notes-count"></span>
+    </header>
+
+    <section class="notes-section">
+      <h1 class="page-heading">My Notes</h1>
+      <p class="page-subtitle">Your thoughts, organized in one place.</p>
+
+      <div class="section-label">Recently edited</div>
+      <div id="notes-container" class="notes-grid">
+        <!-- Notes will be displayed here by notes.js -->
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Small UI-only helpers; the note data and CRUD logic remain in your existing JS files.
+    if (window.lucide) lucide.createIcons();
+    document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
+      document.body.classList.toggle("sb-closed");
+    });
+  </script>
+</body>
+</html>
