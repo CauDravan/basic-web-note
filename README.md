@@ -211,6 +211,7 @@ Tạo file `.env` trong thư mục `backend` và cấu hình biến môi trườ
 ``` env
 MONGO_URI=your_mongodb_connection_string
 PORT=5000
+=======
 ```
 
 Chạy backend:
@@ -270,4 +271,11 @@ Nhóm cập nhật sau khi thống nhất phân công chính thức.
   Lê Tôn Hải          Chưa cập nhật
   Nguyễn Hữu Nhật     Chưa cập nhật
   Nguyễn Trọng Tiến   Chưa cập nhật
-  
+
+## 9. Nhật ký phát triển
+
+| Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
+|---|---|---|---|
+| 2026-11-09 | Đặng Vĩnh Quang | Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes. |  |
+| 2026-11-10 | Đặng Vĩnh Quang | Xây dựng frontend, Kết nối frontend với backend, Deploy lên Vercel |
+
