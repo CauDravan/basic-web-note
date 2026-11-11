@@ -1,181 +1,273 @@
 # NoteSpace
 
-Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, sắp xếp và quản lý ghi chú. Ứng dụng hỗ trợ trang con nhiều cấp, tìm kiếm và các chức năng hỗ trợ viết bằng AI.
+Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, sắp xếp và
+quản lý ghi chú. Dự án được phát triển cho học phần CSB25022 -- Web
+Development.
 
-## Mục lục
+> **Trạng thái hiện tại:** Backend đã được deploy lên Vercel và đã kiểm
+> tra thành công API đọc/tạo ghi chú. Frontend có project Vercel riêng;
+> việc tích hợp đầy đủ frontend với API và hoàn thiện các chức năng giao
+> diện vẫn đang được triển khai.
 
-- [Các chức năng](#các-chức-năng)
-- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
-- [Cấu trúc dự án](#cấu-trúc-dự-án)
-- [Phân công thành viên](#phân-công-thành-viên)
-- [Yêu cầu trước khi cài đặt](#yêu-cầu-trước-khi-cài-đặt)
-- [Nhật ký phát triển](#nhật-ký-phát-triển)
+## 1. Links triển khai
 
-## Các chức năng
+  ----------------------------------------------------------------------------
+  Thành phần      URL                                          Trạng thái
+  --------------- -------------------------------------------- ---------------
+  Frontend        https://basic-web-note-frontend.vercel.app   Đã có project
+                                                               deploy; cần
+                                                               kiểm tra giao
+                                                               diện và tích
+                                                               hợp API
 
-### 1. Quản lý ghi chú
+  Backend         https://basic-web-note-backend.vercel.app    Đã deploy
 
-- [ ] Tạo trang/ghi chú
-- [ ] Chỉnh sửa tiêu đề và nội dung trang
-- [ ] Tự động lưu thay đổi
-- [ ] Chuyển trang vào Thùng rác
-- [ ] Khôi phục trang từ Thùng rác
-- [ ] Xóa trang vĩnh viễn
-- [ ] Lưu trữ ghi chú thông qua backend và cơ sở dữ liệu
-- [ ] Bổ sung kiểm tra dữ liệu đầu vào và xử lý lỗi API
+  API lấy danh    `GET /api/notes`                             Đã kiểm tra
+  sách notes                                                   thành công
 
-### 2. Trang con và điều hướng
+  API tạo note    `POST /api/notes`                            Đã kiểm tra
+                                                               thành công
+  ----------------------------------------------------------------------------
 
-- [ ] Tạo trang con từ một trang cha
-- [ ] Hiển thị cấu trúc trang phân cấp ở thanh điều hướng bên
-- [ ] Mở rộng và thu gọn danh sách trang con
-- [ ] Hiển thị đường dẫn điều hướng (breadcrumbs)
-- [ ] Chuyển về trang cha thông qua breadcrumbs
-- [ ] Hỗ trợ nhiều cấp trang con
-- [ ] Lưu quan hệ cha-con thông qua backend và cơ sở dữ liệu
-- [ ] Kiểm thử cấu trúc trang con sau khi tải lại trang và qua các phiên sử dụng
+### Kết quả kiểm thử đã xác nhận
 
-### 3. Tìm kiếm và sắp xếp
+-   `GET /api/notes` trả về JSON với `success: true`.
+-   `POST /api/notes` tạo note thử nghiệm và trả về `success: true`,
+    `Note created successfully`.
+-   Gọi lại `GET /api/notes` trả về `count: 2`, `data: [...]`.
+-   Backend sử dụng MongoDB Atlas thông qua Mongoose.
 
-- [ ] Tìm kiếm theo tiêu đề
-- [ ] Tìm kiếm theo nội dung
-- [ ] Ghim và bỏ ghim trang
-- [ ] Hiển thị các trang đã ghim
-- [ ] Thêm thẻ/nhãn văn bản cho trang
-- [ ] Lọc trang theo thẻ/nhãn
-- [ ] Lưu dữ liệu tìm kiếm, ghim và phân loại thông qua backend
+Hai bản ghi hiện có là dữ liệu kiểm thử (`Connection Test` và một bản
+ghi khác). Nhóm nên kiểm tra/xóa dữ liệu thử nghiệm trước khi demo hoặc
+nghiệm thu.
 
-### 4. Trình soạn thảo nội dung
+## 2. Chức năng và tiến độ
 
-- [ ] Chỉnh sửa nội dung đoạn văn
-- [ ] Thêm tiêu đề
-- [ ] Thêm danh sách công việc (to-do)
-- [ ] Thêm danh sách gạch đầu dòng
-- [ ] Thêm trích dẫn và khối ghi chú nổi bật (callout)
-- [ ] Thêm khối nội dung bằng lệnh dấu gạch chéo (slash command)
-- [ ] Kiểm tra việc chuyển đổi và lưu nội dung trình soạn thảo vào cơ sở dữ liệu
+Các mục dưới đây phân biệt giữa phần đã kiểm chứng và phần còn lại.
+Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc route.
 
-### 5. Trợ lý AI
+### Quản lý ghi chú
 
-- [ ] Chức năng tóm tắt nội dung
-- [ ] Chức năng cải thiện cách diễn đạt
-- [ ] Chức năng đề xuất tiêu đề
-- [ ] Kết nối trợ lý AI với một dịch vụ AI thực tế
-- [ ] Tải và quản lý cấu hình nhà cung cấp AI một cách an toàn
-- [ ] Xử lý lỗi API và trạng thái đang tải
-- [ ] Cho phép người dùng xem trước, áp dụng hoặc hủy nội dung AI đề xuất
+-   [x] Backend: lấy danh sách ghi chú (`GET /api/notes`)
+-   [x] Backend: lấy một ghi chú theo ID (`GET /api/notes/:id`)
+-   [x] Backend: tạo ghi chú (`POST /api/notes`)
+-   [x] Backend: cập nhật ghi chú (`PUT /api/notes/:id`)
+-   [x] Backend: xóa ghi chú vĩnh viễn (`DELETE /api/notes/:id`)
+-   [ ] Frontend: hiển thị danh sách notes lấy từ API
+-   [ ] Frontend: tạo note từ giao diện
+-   [ ] Frontend: chỉnh sửa và tự động lưu note
+-   [ ] Frontend: xóa note từ giao diện
+-   [ ] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
 
-### 6. Giao diện và cài đặt
+### Trang con và điều hướng
 
-- [ ] Giao diện sáng
-- [ ] Giao diện tối
-- [ ] Lưu tùy chọn giao diện bằng bộ nhớ cục bộ
-- [ ] Thanh điều hướng bên có khả năng thích ứng
-- [ ] Giao diện cài đặt
-- [ ] Các trường cấu hình nhà cung cấp AI trong phần cài đặt
-- [ ] Kiểm tra giao diện trên máy tính, máy tính bảng và điện thoại
-- [ ] Kết nối phần cài đặt với ứng dụng đã tích hợp
-- [ ] Kiểm tra khả năng truy cập và điều hướng bằng bàn phím
+-   [ ] Tạo trang con từ trang cha
+-   [ ] Hiển thị cấu trúc phân cấp trong sidebar
+-   [ ] Mở rộng/thu gọn danh sách trang con
+-   [ ] Breadcrumbs và điều hướng về trang cha
+-   [ ] Kiểm thử quan hệ cha-con sau khi tải lại trang
 
-## Công nghệ sử dụng
+### Tìm kiếm và sắp xếp
 
-| Thành phần | Công nghệ/định hướng hiện tại |
-|---|---|
-| Frontend | HTML, CSS và JavaScript |
-| Backend | Node.js và Express.js |
-| Cơ sở dữ liệu | MongoDB Atlas (đã thay đổi thay vì sử dụng MySQL) |
-| AI |  |
-| Quản lý mã nguồn | Git |
+-   [ ] Tìm kiếm theo tiêu đề
+-   [ ] Tìm kiếm theo nội dung
+-   [ ] Ghim/bỏ ghim ghi chú
+-   [ ] Trang hiển thị ghi chú đã ghim
+-   [ ] Tags và lọc theo tags
 
-## Cấu trúc dự án
+### Trình soạn thảo
 
-```text
+-   [ ] Chỉnh sửa nội dung đoạn văn
+-   [ ] Heading, to-do, bullet list
+-   [ ] Quote và callout
+-   [ ] Slash commands
+-   [ ] Lưu và khôi phục nội dung editor qua API
+
+### AI Assistant
+
+-   [ ] Tóm tắt nội dung
+-   [ ] Cải thiện cách diễn đạt
+-   [ ] Đề xuất tiêu đề
+-   [ ] Tích hợp dịch vụ AI thực tế
+-   [ ] Xử lý trạng thái loading/lỗi và cho phép xem trước kết quả
+
+### Giao diện và chất lượng
+
+-   [ ] Giao diện sáng/tối và lưu tùy chọn
+-   [ ] Responsive trên desktop, tablet và mobile
+-   [ ] Settings
+-   [ ] Accessibility và điều hướng bàn phím
+-   [ ] Kiểm thử các luồng chính
+-   [ ] Lighthouse và logging/tracking
+
+## 3. Công nghệ
+
+  Thành phần        Công nghệ
+  ----------------- ---------------------------------------------------
+  Frontend          HTML, CSS, JavaScript
+  Backend           Node.js, Express.js
+  Database          MongoDB Atlas
+  ODM               Mongoose
+  Hosting           Vercel (frontend và backend là hai project riêng)
+  Version control   Git và GitHub
+
+**Lưu ý học phần:** Project brief hiện nêu MySQL/PostgreSQL trong tiêu
+chí database, trong khi nhóm đang sử dụng MongoDB Atlas. Nhóm cần xác
+nhận với giảng viên rằng lựa chọn này được chấp nhận.
+
+## 4. Cấu trúc dự án
+
+Cập nhật sơ đồ này khi cấu trúc repository thay đổi. Tên file/thư mục
+trong README cần được đối chiếu với repository thực tế trước mỗi lần
+release.
+
+``` text
 basic-web-note/
-├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── controllers/
-│   │   ├── aiController.js
-│   │   └── noteController.js
-│   ├── middleware/
-│   │   └── errorHandler.js
-│   ├── models/
-│   │   └── Note.js
-│   ├── routes/
-│   │   ├── aiRoutes.js
-│   │   └── noteRoutes.js
-│   ├── services/
-│   │   └── aiService.js
-│   ├── .env.example
-│   ├── package-lock.json
-│   ├── package.json
-│   └── server.js
-├── docs/
-│   ├── ERD.md
-│   └── notespace_final.html
-├── frontend/
-│   ├── assets/
-│   ├── css/
-│   │   ├── responsive.css
-│   │   └── style.css
-│   ├── js/
-│   │   ├── ai.js
-│   │   ├── app.js
-│   │   ├── notes.js
-│   │   ├── search.js
-│   │   └── settings.js
-│   ├── pages/
-│   │   ├── all-notes.html
-│   │   ├── pinned.html
-│   │   ├── settings.html
-│   │   └── trash.html
-│   └── index.html
-├── .gitignore
-└── README.md
+├─ backend/
+│  ├─ config/
+│  │  └─ db.js
+│  ├─ controllers/
+│  │  ├─ aiController.js
+│  │  └─ noteController.js
+│  ├─ middleware/
+│  │  └─ errorHandler.js
+│  ├─ models/
+│  │  └─ Note.js
+│  ├─ routes/
+│  │  ├─ aiRoutes.js
+│  │  └─ noteRoutes.js
+│  ├─ services/
+│  │  └─ aiService.js
+│  ├─ .env
+│  ├─ .env.example
+│  ├─ package-lock.json
+│  ├─ package.json
+│  └─ server.js
+├─ docs/
+│  └─ prototype.html
+├─ frontend/
+│  ├─ assets/
+│  ├─ css/
+│  │  ├─ responsive.css
+│  │  └─ style.css
+│  ├─ js/
+│  │  ├─ ai.js
+│  │  ├─ app.js
+│  │  ├─ notes.js
+│  │  ├─ search.js
+│  │  └─ settings.js
+│  ├─ pages/
+│  │  ├─ home.html
+│  │  ├─ pinned.html
+│  │  ├─ settings.html
+│  │  └─ trash.html
+│  └─ index.html
+├─ .gitignore
+└─ README.md
 ```
 
-Cập nhật sơ đồ cấu trúc này khi có tệp hoặc thư mục được thêm, xóa hay đổi tên. Đây là cấu trúc dự kiến; cần điều chỉnh để khớp với cấu trúc thực tế của repository.
+## 5. API ghi chú
 
-## Phân công thành viên
+Base URL production:
 
-| Thành viên | Công việc phụ trách |
-|---|---|
-| Đặng Vĩnh Quang |  |
-| Lê Tôn Hải |  |
-| Nguyễn Hữu Nhật |  |
-| Nguyễn Trọng Tiến |  |
+``` text
+https://basic-web-note-backend.vercel.app/api
+```
 
-Cập nhật bảng này sau khi nhóm thống nhất phân công. Không tự gán nhiệm vụ khi chưa có xác nhận.
+  Method   Endpoint       Mục đích
+  -------- -------------- ---------------------
+  GET      `/notes`       Lấy danh sách notes
+  GET      `/notes/:id`   Lấy note theo ID
+  POST     `/notes`       Tạo note
+  PUT      `/notes/:id`   Cập nhật note
+  DELETE   `/notes/:id`   Xóa note vĩnh viễn
 
-## Yêu cầu trước khi cài đặt
+Ví dụ tạo note:
 
-Để cài đặt và chạy NoteSpace trên máy tính cá nhân, cần chuẩn bị các công cụ và tài khoản sau:
+``` json
+{
+  "title": "My first note",
+  "content": "Note content",
+  "pinned": false,
+  "tags": []
+}
+```
 
-### 1. Công cụ cần thiết
+Các trường dữ liệu chính trong Note model gồm `title`, `content`,
+`parent_id`, `pinned`, `trashed`, `icon`, `color`, `category`, `tags`,
+cùng `createdAt` và `updatedAt`.
 
-- **Git:** Dùng để clone repository và quản lý mã nguồn.
-- **Node.js:** Môi trường chạy JavaScript phía backend. Khuyến nghị sử dụng phiên bản LTS.
-- **npm:** Trình quản lý package, được cài đặt cùng Node.js.
-- **Web browser:** Chrome, Edge hoặc trình duyệt hiện đại tương đương.
+## 6. Cài đặt local
 
-### 2. Cơ sở dữ liệu
+### Backend
 
-- **MongoDB Atlas:** Sử dụng cơ sở dữ liệu MongoDB trên nền tảng đám mây.
-- Cần có tài khoản MongoDB Atlas và một database cluster.
-- Cần chuẩn bị MongoDB connection string để cấu hình kết nối backend.
+``` bash
+cd backend
+npm install
+```
 
-### 3. Cấu hình môi trường
+Tạo file `.env` trong thư mục `backend` và cấu hình biến môi trường:
 
-Trước khi chạy backend:
+``` env
+MONGO_URI=your_mongodb_connection_string
+PORT=5000
+```
 
-1. Mở thư mục `backend`.
-2. Tạo file `.env` dựa trên `.env.example`.
-3. Cập nhật các biến môi trường cần thiết.
+Chạy backend:
 
-## Nhật ký phát triển
+``` bash
+npm run dev
+```
 
-Ghi lại các công việc quan trọng trong quá trình phát triển dự án.
+Backend local mặc định: `http://localhost:5000`.
 
-| Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
-|---|---|---|---|
-| 2026-11-09 | Đặng Vĩnh Quang |  Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes. | Hoàn thành các API CRUD: tạo, đọc, cập nhật và xóa ghi chú. Đã kiểm thử bằng Postman và các API hoạt động như mong đợi. |
+Không commit `.env`, connection string, API key hoặc secret lên GitHub.
+Chỉ commit `.env.example` với tên biến và giá trị mẫu không nhạy cảm.
+
+### Frontend
+
+Frontend hiện là HTML/CSS/JavaScript thuần. Có thể chạy bằng Live Server
+hoặc một static server. Đảm bảo `frontend/js/api.js` trỏ tới backend
+local khi phát triển local và backend production khi deploy.
+
+## 7. Git workflow
+
+Nhóm sử dụng nhánh riêng cho từng tính năng, không phát triển trực tiếp
+trên `main`.
+
+Quy trình:
+
+1.  Cập nhật `main` trước khi bắt đầu.
+2.  Tạo feature branch từ `main`.
+3.  Chỉ commit các thay đổi thuộc phạm vi quản lý ghi chú.
+4.  Dùng commit message mô tả rõ thay đổi.
+5.  Push branch và mở Pull Request về `main`.
+6.  Thành viên khác review và kiểm tra trước khi merge.
+
+Ví dụ:
+
+``` bash
+git switch main
+git pull origin main
+git switch -c feature/note-management
+```
+
+Commit message gợi ý:
+
+``` text
+feat(notes): connect notes list to backend API
+feat(notes): add note creation flow
+fix(notes): handle API errors when saving notes
+```
+
+## 8. Phân công thành viên
+
+Nhóm cập nhật sau khi thống nhất phân công chính thức.
+
+  Thành viên          Công việc phụ trách
+  ------------------- ---------------------
+  Đặng Vĩnh Quang     Chưa cập nhật
+  Lê Tôn Hải          Chưa cập nhật
+  Nguyễn Hữu Nhật     Chưa cập nhật
+  Nguyễn Trọng Tiến   Chưa cập nhật
+  
