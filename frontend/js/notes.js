@@ -65,19 +65,18 @@
       container.replaceChildren();
       if (sidebar) sidebar.replaceChildren();
 
-      if (count) count.textContent = `${notes.length} notes`;
+      const activeNotes = notes.filter((note) => !note.trashed);
+      if (count) count.textContent = `${activeNotes.length} notes`;
 
-      if (notes.length === 0) {
+      if (activeNotes.length === 0) {
         const empty = document.createElement("p");
         empty.className = "empty-state";
         empty.textContent = "No notes yet. Create your first note to get started.";
         container.appendChild(empty);
-        return;
+        return true;
       }
 
-      notes
-        .filter((note) => !note.trashed)
-        .forEach((note) => {
+      activeNotes.forEach((note) => {
           container.appendChild(createNoteElement(note));
 
           if (sidebar) {
@@ -90,6 +89,7 @@
         });
 
       if (window.lucide) window.lucide.createIcons();
+      return true;
     } catch (error) {
       console.error("Unable to load notes:", error);
       container.replaceChildren();
@@ -98,8 +98,69 @@
       message.textContent = `Could not load notes: ${error.message}`;
       container.appendChild(message);
       if (count) count.textContent = "";
+      return false;
     }
   }
 
-  window.notes = { loadNotes };
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.hidden = false;
+    window.clearTimeout(showToast.timeoutId);
+    showToast.timeoutId = window.setTimeout(() => {
+      toast.hidden = true;
+    }, 3000);
+  }
+
+  async function createNote(button) {
+    if (!window.api || typeof window.api.createNote !== "function") {
+      showToast("The notes service is not available. Please reload the page.");
+      return null;
+    }
+
+    if (button?.disabled) return null;
+
+    if (button) {
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+    }
+
+    try {
+      const createdNote = await window.api.createNote({
+        title: "Untitled",
+        content: "",
+        parent_id: null,
+        pinned: false,
+        icon: "📄",
+        color: "white",
+        category: "NOTE",
+        tags: [],
+      });
+
+      if (!createdNote || !(createdNote._id || createdNote.id)) {
+        throw new Error("The server did not return the created note.");
+      }
+
+      const refreshed = await loadNotes();
+      showToast(
+        refreshed
+          ? "New note created successfully."
+          : "Note created, but the list could not refresh. Reload the page."
+      );
+      return createdNote;
+    } catch (error) {
+      console.error("Unable to create note:", error);
+      showToast(`Could not create note: ${error.message}`);
+      return null;
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+      }
+    }
+  }
+
+  window.notes = { loadNotes, createNote };
 })();
