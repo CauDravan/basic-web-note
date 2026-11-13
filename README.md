@@ -53,11 +53,11 @@ Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc rou
 -   [x] Backend: tạo ghi chú (`POST /api/notes`)
 -   [x] Backend: cập nhật ghi chú (`PUT /api/notes/:id`)
 -   [x] Backend: xóa ghi chú vĩnh viễn (`DELETE /api/notes/:id`)
--   [ ] Frontend: hiển thị danh sách notes lấy từ API
--   [ ] Frontend: tạo note từ giao diện
--   [ ] Frontend: chỉnh sửa và tự động lưu note
--   [ ] Frontend: xóa note từ giao diện
--   [ ] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
+-   [x] Frontend: hiển thị danh sách notes lấy từ API
+-   [x] Frontend: tạo note từ giao diện
+-   [x] Frontend: chỉnh sửa và tự động lưu note
+-   [x] Frontend: xóa note từ giao diện
+-   [x] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
 
 ### Trang con và điều hướng
 
