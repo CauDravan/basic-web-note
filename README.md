@@ -265,12 +265,12 @@ fix(notes): handle API errors when saving notes
 
 Nhóm cập nhật sau khi thống nhất phân công chính thức.
 
-  Thành viên          Công việc phụ trách
-  ------------------- ---------------------
-  Đặng Vĩnh Quang     Chưa cập nhật
-  Lê Tôn Hải          Chưa cập nhật
-  Nguyễn Hữu Nhật     Chưa cập nhật
-  Nguyễn Trọng Tiến   Chưa cập nhật
+| Thành viên | Công việc phụ trách |
+|---|---|
+| Đặng Vĩnh Quang | Chưa cập nhật
+| Lê Tôn Hải | Chưa cập nhật
+| Nguyễn Hữu Nhật | Chưa cập nhật
+| Nguyễn Trọng Tiến | Chưa cập nhật
 
 ## 9. Nhật ký phát triển
 
