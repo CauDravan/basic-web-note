@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NoteSpace: create, organize and search your notes in one place.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Settings · NoteSpace</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📝%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="../js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/layout.js"></script>
+  <script defer src="../js/search.js"></script>
+  <script defer src="../js/settings.js"></script>
+</head>
+<body data-base="../" data-page="settings" data-title="Settings" data-icon="⚙️">
+  <div id="sidebar-root"></div>
+  <div class="main-content">
+    <div id="topbar-root"></div>
+    <main class="mx-auto w-full max-w-[640px] px-5 pb-28 pt-6 md:px-12">
+      <h1 class="mb-1.5 text-[28px] font-bold leading-tight md:text-[32px]">Settings</h1>
+      <p class="mb-6 text-mut2">Changes apply instantly and are saved in this browser.</p>
+      <section class="grp" aria-labelledby="h-theme">
+        <h2 id="h-theme">Appearance</h2>
+        <p>Choose how NoteSpace looks.</p>
+        <div class="seg" role="group" aria-label="Theme">
+          <button type="button" data-theme-opt="light"><i data-lucide="sun"></i>Light</button>
+          <button type="button" data-theme-opt="dark"><i data-lucide="moon"></i>Dark</button>
+        </div>
+      </section>
+      <section class="grp" aria-labelledby="h-api">
+        <h2 id="h-api">Connection</h2>
+        <p>Your notes are stored in the cloud through this API.</p>
+        <p class="!mb-3 break-all !text-[13px] !text-mut2" id="api-url"></p>
+        <button id="test-api" class="btn" type="button"><i data-lucide="plug-zap"></i>Test connection</button>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

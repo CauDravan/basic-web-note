@@ -1,166 +1,99 @@
-// NoteSpace note list
-// This file uses classic scripts and the shared window.api object.
-
+// List pages: Home, Pinned, Trash. Renders notes from the API and handles row actions.
 (function () {
   "use strict";
+  const mode = document.body.dataset.page;
+  const box = document.getElementById("notes-container");
+  if (!box || !window.NS) return;
+  const countEl = document.getElementById("notes-count");
 
-  function formatDate(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "";
-    return new Intl.DateTimeFormat("en", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
+  const EMPTY = {
+    home: "No notes yet. Create your first note to get started.",
+    pinned: "Nothing pinned yet. Click the star on a note to keep it here.",
+    trash: "Trash is empty.",
+  };
+
+  function visible() {
+    let list = NS.notes.filter(NS.matches);
+    if (mode === "trash") return list.filter((n) => n.trashed);
+    list = list.filter((n) => !n.trashed);
+    if (mode === "pinned") list = list.filter((n) => n.pinned);
+    return list.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   }
 
-  function createNoteElement(note) {
-    const card = document.createElement("article");
-    card.className = "note-card";
-
-    const icon = document.createElement("span");
-    icon.className = "note-icon";
-    icon.textContent = note.icon || "📄";
-
-    const title = document.createElement("span");
-    title.className = "note-title";
-    title.textContent = note.title || "Untitled";
-
-    const preview = document.createElement("span");
-    preview.className = "note-preview";
-    const content = typeof note.content === "string" ? note.content : "";
-    preview.textContent = content.replace(/\s+/g, " ").trim().slice(0, 90);
-
-    const meta = document.createElement("span");
-    meta.className = "note-meta";
-    meta.textContent = formatDate(note.updatedAt || note.updated_at || note.createdAt);
-
-    card.append(icon, title, preview, meta);
-    card.dataset.noteId = note._id || note.id || "";
-    return card;
-  }
-
-  async function loadNotes() {
-    const container = document.getElementById("notes-container");
-    const count = document.getElementById("notes-count");
-    const sidebar = document.getElementById("sidebar-notes");
-
-    if (!container) return;
-
-    container.replaceChildren();
-    const loading = document.createElement("p");
-    loading.className = "empty-state";
-    loading.textContent = "Loading notes...";
-    container.appendChild(loading);
-
-    try {
-      if (!window.api || typeof window.api.getNotes !== "function") {
-        throw new Error("NoteSpace API has not been initialized.");
-      }
-
-      const result = await window.api.getNotes();
-      const notes = Array.isArray(result) ? result : (result?.notes || []);
-
-      container.replaceChildren();
-      if (sidebar) sidebar.replaceChildren();
-
-      const activeNotes = notes.filter((note) => !note.trashed);
-      if (count) count.textContent = `${activeNotes.length} notes`;
-
-      if (activeNotes.length === 0) {
-        const empty = document.createElement("p");
-        empty.className = "empty-state";
-        empty.textContent = "No notes yet. Create your first note to get started.";
-        container.appendChild(empty);
-        return true;
-      }
-
-      activeNotes.forEach((note) => {
-          container.appendChild(createNoteElement(note));
-
-          if (sidebar) {
-            const link = document.createElement("div");
-            link.className = "sb-item";
-            link.textContent = `${note.icon || "📄"} ${note.title || "Untitled"}`;
-            link.dataset.noteId = note._id || note.id || "";
-            sidebar.appendChild(link);
-          }
-        });
-
-      if (window.lucide) window.lucide.createIcons();
-      return true;
-    } catch (error) {
-      console.error("Unable to load notes:", error);
-      container.replaceChildren();
-      const message = document.createElement("p");
-      message.className = "empty-state";
-      message.textContent = `Could not load notes: ${error.message}`;
-      container.appendChild(message);
-      if (count) count.textContent = "";
-      return false;
+  function message(text, retry) {
+    const p = document.createElement("div");
+    p.className = "py-6 text-mut";
+    p.textContent = text;
+    if (retry) {
+      p.append(" ");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.dataset.a = "retry";
+      b.textContent = "Try again";
+      p.appendChild(b);
     }
+    box.replaceChildren(p);
   }
 
-  function showToast(message) {
-    const toast = document.getElementById("toast");
-    if (!toast) return;
-
-    toast.textContent = message;
-    toast.hidden = false;
-    window.clearTimeout(showToast.timeoutId);
-    showToast.timeoutId = window.setTimeout(() => {
-      toast.hidden = true;
-    }, 3000);
+  function render() {
+    if (!NS.ready) {
+      if (countEl) countEl.textContent = "";
+      return message(NS.error ? `Could not load notes: ${NS.error}.` : "Loading notes…", !!NS.error);
+    }
+    const list = visible();
+    if (countEl) countEl.textContent = `${list.length} ${list.length === 1 ? "note" : "notes"}`;
+    const emptyTrash = document.getElementById("empty-trash");
+    if (emptyTrash) emptyTrash.disabled = mode === "trash" && !NS.notes.some((n) => n.trashed);
+    if (!list.length) return message(NS.query ? "No notes match your search." : EMPTY[mode]);
+    box.replaceChildren(...list.map((n) => NS.noteRow(n, { trash: mode === "trash" })));
+    NS.icons();
   }
 
-  async function createNote(button) {
-    if (!window.api || typeof window.api.createNote !== "function") {
-      showToast("The notes service is not available. Please reload the page.");
-      return null;
+  box.addEventListener("click", async (e) => {
+    if (e.target.closest('[data-a="retry"]')) return NS.load();
+    const row = e.target.closest(".note-row");
+    const n = row && NS.find(row.dataset.id);
+    if (!n) return;
+    const a = e.target.closest("[data-a]");
+    if (!a) { location.href = NS.url.note(NS.id(n)); return; }
+    switch (a.dataset.a) {
+      case "pin":
+        if (await NS.update(n, { pinned: !n.pinned })) NS.toast(n.pinned ? "Removed from favorites." : "Added to favorites.");
+        break;
+      case "trash":
+        if (await NS.update(n, { trashed: true })) NS.toast("Moved to Trash.");
+        break;
+      case "restore":
+        if (await NS.update(n, { trashed: false })) NS.toast("Restored.");
+        break;
+      case "delete":
+        if (await NS.confirmDelete(n)) if (await NS.destroy(n)) NS.toast("Note deleted permanently.");
+        break;
     }
+  });
 
-    if (button?.disabled) return null;
+  box.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.classList.contains("note-row")) location.href = NS.url.note(e.target.dataset.id);
+  });
 
-    if (button) {
-      button.disabled = true;
-      button.setAttribute("aria-busy", "true");
-    }
-
-    try {
-      const createdNote = await window.api.createNote({
-        title: "Untitled",
-        content: "",
-        parent_id: null,
-        pinned: false,
-        icon: "📄",
-        color: "white",
-        category: "NOTE",
-        tags: [],
+  const emptyBtn = document.getElementById("empty-trash");
+  if (emptyBtn) {
+    emptyBtn.addEventListener("click", async () => {
+      const trashed = NS.notes.filter((n) => n.trashed);
+      if (!trashed.length) return;
+      const ok = await NS.confirm({
+        title: "Empty Trash?",
+        text: `${trashed.length} ${trashed.length === 1 ? "note" : "notes"} will be removed forever. This can’t be undone.`,
+        ok: "Empty Trash",
       });
-
-      if (!createdNote || !(createdNote._id || createdNote.id)) {
-        throw new Error("The server did not return the created note.");
-      }
-
-      const refreshed = await loadNotes();
-      showToast(
-        refreshed
-          ? "New note created successfully."
-          : "Note created, but the list could not refresh. Reload the page."
-      );
-      return createdNote;
-    } catch (error) {
-      console.error("Unable to create note:", error);
-      showToast(`Could not create note: ${error.message}`);
-      return null;
-    } finally {
-      if (button) {
-        button.disabled = false;
-        button.removeAttribute("aria-busy");
-      }
-    }
+      if (!ok) return;
+      let failed = 0;
+      for (const n of trashed) if (!(await NS.destroy(n))) failed++;
+      if (!failed) NS.toast("Trash emptied.");
+    });
   }
 
-  window.notes = { loadNotes, createNote };
+  document.addEventListener("ns:notes", render);
+  render();
 })();
