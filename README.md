@@ -55,9 +55,9 @@ Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc rou
 -   [x] Backend: xóa ghi chú vĩnh viễn (`DELETE /api/notes/:id`)
 -   [x] Frontend: hiển thị danh sách notes lấy từ API
 -   [x] Frontend: tạo note từ giao diện
--   [ ] Frontend: chỉnh sửa và tự động lưu note
--   [ ] Frontend: xóa note từ giao diện
--   [ ] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
+-   [x] Frontend: chỉnh sửa và tự động lưu note
+-   [x] Frontend: xóa note từ giao diện
+-   [x] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
 
 ### Trang con và điều hướng
 
@@ -69,15 +69,15 @@ Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc rou
 
 ### Tìm kiếm và sắp xếp
 
--   [ ] Tìm kiếm theo tiêu đề
+-   [x] Tìm kiếm theo tiêu đề
 -   [ ] Tìm kiếm theo nội dung
--   [ ] Ghim/bỏ ghim ghi chú
--   [ ] Trang hiển thị ghi chú đã ghim
+-   [x] Ghim/bỏ ghim ghi chú
+-   [x] Trang hiển thị ghi chú đã ghim
 -   [ ] Tags và lọc theo tags
 
 ### Trình soạn thảo
 
--   [ ] Chỉnh sửa nội dung đoạn văn
+-   [x] Chỉnh sửa nội dung đoạn văn
 -   [ ] Heading, to-do, bullet list
 -   [ ] Quote và callout
 -   [ ] Slash commands
@@ -93,9 +93,9 @@ Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc rou
 
 ### Giao diện và chất lượng
 
--   [ ] Giao diện sáng/tối và lưu tùy chọn
--   [ ] Responsive trên desktop, tablet và mobile
--   [ ] Settings
+-   [x] Giao diện sáng/tối và lưu tùy chọn
+-   [x] Responsive trên desktop, tablet và mobile
+-   [x] Settings
 -   [ ] Accessibility và điều hướng bàn phím
 -   [ ] Kiểm thử các luồng chính
 -   [ ] Lighthouse và logging/tracking
