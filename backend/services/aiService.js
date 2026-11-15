@@ -1,5 +1,5 @@
 // Gọi Gemini (generateContent). API key chỉ nằm ở server, không bao giờ gửi xuống trình duyệt.
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 const MAX_CHARS = 8000;
 const TIMEOUT_MS = 25000;
@@ -33,7 +33,7 @@ export async function generate(action, text) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: PROMPTS[action] }] },
         contents: [{ role: "user", parts: [{ text }] }],
-        generationConfig: { temperature: action === "improve" ? 0.3 : 0.5, maxOutputTokens: 2048 },
+        generationConfig: { temperature: action === "improve" ? 0.3 : 0.5, maxOutputTokens: 4096 },
       }),
     });
   } catch (e) {
