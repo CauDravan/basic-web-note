@@ -40,5 +40,7 @@ window.api = {
   // opts lets callers pass fetch options, e.g. { keepalive: true } when the page is closing
   updateNote: (id, body, opts = {}) =>
     request(`/notes/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(body), ...opts }),
+  // action: "summarize" | "improve" | "title"; resolves to { action, result }
+  ai: (action, text) => request("/ai", { method: "POST", body: JSON.stringify({ action, text }) }),
   deleteNote: (id) => request(`/notes/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
