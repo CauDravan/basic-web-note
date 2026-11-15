@@ -122,7 +122,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let notes=[],mode='home',curId=null,ready=false,saveTimer=null,openNew=null,first=true,aiRes=null,pendDel=null,ro=false,slash=null,popItems=[],toastT;
 const S={theme:'light',aiEnabled:true,provider:'builtin',apiKey:'',model:'',endpoint:''},SKEY='notespace-settings';
-const EMO=['📄','📝','💡','📚','✅','🎯','🌱','🗓️','💼','🧠','🎨','⭐'],HINT={openai:'gpt-4o-mini',anthropic:'claude-sonnet-4-6',gemini:'gemini-2.0-flash',custom:'model name'};
+const EMO=['📄','📝','💡','📚','✅','🎯','🌱','🗓️','💼','🧠','🎨','⭐'],HINT={openai:'gpt-4o-mini',anthropic:'claude-sonnet-4-6',gemini:'gemini-3.8-flash',custom:'model name'};
 try{Object.assign(S,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
 function applyTheme(){document.documentElement.dataset.theme=S.theme;document.querySelectorAll('[data-theme-opt]').forEach(b=>{const on=b.dataset.themeOpt===S.theme;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on)})}
 function persist(){try{localStorage.setItem(SKEY,JSON.stringify(S));return true}catch(e){return false}}
