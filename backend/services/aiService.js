@@ -1,5 +1,5 @@
 // Gọi Gemini (generateContent). API key chỉ nằm ở server, không bao giờ gửi xuống trình duyệt.
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 const MAX_CHARS = 8000;
 const TIMEOUT_MS = 25000;
@@ -33,7 +33,7 @@ export async function generate(action, text) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: PROMPTS[action] }] },
         contents: [{ role: "user", parts: [{ text }] }],
-        generationConfig: { temperature: action === "improve" ? 0.3 : 0.5, maxOutputTokens: 2048 },
+        generationConfig: { temperature: action === "improve" ? 0.3 : 0.5, maxOutputTokens: 4096 },
       }),
     });
   } catch (e) {
@@ -47,7 +47,9 @@ export async function generate(action, text) {
     console.error("Gemini error", res.status, detail.slice(0, 300));
     if (res.status === 429) throw fail(429, "AI quota reached. Please wait a moment and try again.");
     if (res.status === 400 || res.status === 403) throw fail(502, "AI request was rejected. Check the API key and model name.");
-    throw fail(502, "AI service returned an error.");
+    if (res.status === 404) throw fail(502, `AI model "${MODEL}" was not found. Set GEMINI_MODEL to a model available in AI Studio.`);
+    if (res.status === 500 || res.status === 503) throw fail(503, "The AI service is busy right now. Please try again in a moment.");
+    throw fail(502, `AI service returned an error (${res.status}).`);
   }
 
   const data = await res.json();
