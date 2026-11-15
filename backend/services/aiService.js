@@ -47,7 +47,9 @@ export async function generate(action, text) {
     console.error("Gemini error", res.status, detail.slice(0, 300));
     if (res.status === 429) throw fail(429, "AI quota reached. Please wait a moment and try again.");
     if (res.status === 400 || res.status === 403) throw fail(502, "AI request was rejected. Check the API key and model name.");
-    throw fail(502, "AI service returned an error.");
+    if (res.status === 404) throw fail(502, `AI model "${MODEL}" was not found. Set GEMINI_MODEL to a model available in AI Studio.`);
+    if (res.status === 500 || res.status === 503) throw fail(503, "The AI service is busy right now. Please try again in a moment.");
+    throw fail(502, `AI service returned an error (${res.status}).`);
   }
 
   const data = await res.json();
