@@ -63,3 +63,16 @@ body.sb-closed .main-content{margin-left:0}
 
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:80;max-width:90vw;padding:8px 14px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:13px}
 @media (prefers-reduced-motion:reduce){.sidebar,.main-content{transition:none}}
+
+/* AI assistant */
+:root{--ai:#8A5CC2;--ail:#F5F0FA}
+html[data-theme="dark"]{--ai:#B794E8;--ail:#2A2335}
+.ai-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 8px;border-radius:6px;color:var(--ai);font-weight:600}
+.ai-btn:hover{background:var(--hov)}
+.ai-btn svg{width:17px;height:17px}
+.aibox{background:var(--ail);border-radius:8px;padding:14px 16px;margin:8px 0 14px}
+.aibox .lb{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ai)}
+.aibox .lb svg{width:14px;height:14px}
+.aibox .tx{white-space:pre-wrap;margin:8px 0 12px;word-break:break-word}
+.aibox .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.aibox .hint{font-size:12px;color:var(--mut)}

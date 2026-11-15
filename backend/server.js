@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import noteRoutes from "./routes/noteRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(async (req, res, next) => {
 });
 
 app.use("/api/notes", noteRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.get("/", (req, res) => res.send("NoteSpace Backend is running!"));
 app.get("/api/test", (req, res) => res.json({ message: "NoteSpace API is working!" }));

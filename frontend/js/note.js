@@ -31,6 +31,7 @@
   function renderActions() {
     if (ro) { actions.replaceChildren(); return; }
     actions.innerHTML = `
+      <button id="ai-btn" class="ai-btn" type="button" aria-label="AI Assistant" aria-haspopup="menu"><i data-lucide="sparkles"></i>AI</button>
       <button id="star-btn" class="icon-btn" type="button" aria-label="Favorite" aria-pressed="${!!note.pinned}"><i data-lucide="star" class="${note.pinned ? "text-[#E8B02E] fill-[#E8B02E]" : ""}"></i></button>
       <button id="more-btn" class="icon-btn" type="button" aria-label="More actions" aria-haspopup="menu"><i data-lucide="ellipsis"></i></button>`;
     NS.icons();
@@ -123,6 +124,12 @@
       const u = await NS.update(note, { pinned: !note.pinned });
       if (u) { note = { ...note, pinned: u.pinned }; renderActions(); NS.toast(u.pinned ? "Added to favorites." : "Removed from favorites."); }
     }
+    const ai = e.target.closest("#ai-btn");
+    if (ai) NS.menu(ai, [
+      { label: "✦  Summarize note", fn: () => runAI("summarize") },
+      { label: "✦  Improve writing", fn: () => runAI("improve") },
+      { label: "✦  Suggest title", fn: () => runAI("title") },
+    ]);
     const more = e.target.closest("#more-btn");
     if (more) NS.menu(more, [{ label: "Move to Trash", danger: true, fn: toTrash }]);
   });
@@ -143,6 +150,60 @@
         if (u) { note = { ...note, icon: u.icon }; iconBtn.textContent = m; syncHead(); }
       },
     })), "emo");
+  });
+
+  /* ---------- AI assistant (Gemini via backend) ---------- */
+  const aiBox = $("#ai-box");
+  const AI = {
+    summarize: { label: "Summary", apply: "Insert at top" },
+    improve: { label: "Improved writing", apply: "Replace text" },
+    title: { label: "Suggested title", apply: "Use as title" },
+  };
+  let aiRes = null, aiBusy = false;
+
+  function showAI(html) {
+    aiBox.innerHTML = html ? `<div class="aibox">${html}</div>` : "";
+    NS.icons();
+  }
+
+  async function runAI(action) {
+    if (ro || aiBusy) return;
+    const text = contentEl.value.trim();
+    if (!text) { NS.toast("Write something in the note first, then try again."); return; }
+    aiBusy = true;
+    showAI(`<div class="lb"><i data-lucide="sparkles"></i>AI · ${AI[action].label}</div><div class="tx">Thinking…</div>`);
+    try {
+      const r = await window.api.ai(action, text);
+      aiRes = { action, result: r.result };
+      showAI(`<div class="lb"><i data-lucide="sparkles"></i>AI · ${AI[action].label} (preview)</div>
+        <div class="tx">${NS.esc(r.result)}</div>
+        <div class="acts"><button class="btn btn-primary" type="button" data-ai="apply">${AI[action].apply}</button>
+        <button class="btn" type="button" data-ai="discard">Discard</button>
+        <span class="hint">Your note stays unchanged until you apply.</span></div>`);
+    } catch (e) {
+      aiRes = null;
+      showAI("");
+      NS.toast("AI error: " + e.message);
+    } finally {
+      aiBusy = false;
+    }
+  }
+
+  aiBox.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ai]");
+    if (!b) return;
+    if (b.dataset.ai === "apply" && aiRes && !ro) {
+      const { action, result } = aiRes;
+      if (action === "title") titleEl.value = result;
+      else if (action === "improve") contentEl.value = result;
+      else contentEl.value = `Summary: ${result}\n\n${contentEl.value}`;
+      autosize();
+      syncHead();
+      schedule();
+      NS.toast("AI result applied.");
+    }
+    aiRes = null;
+    showAI("");
   });
 
   /* ---------- load ---------- */
