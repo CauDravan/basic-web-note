@@ -1,0 +1,17 @@
+// Dán nội dung này vào https://dbdiagram.io/d để xuất ảnh ERD (Export -> PNG).
+Table notes {
+  _id objectid [pk, note: 'MongoDB tự sinh']
+  title string [not null, default: 'Untitled']
+  content string [default: '']
+  parent_id objectid [null, note: 'Trang cha (tự tham chiếu), null nếu là trang gốc']
+  pinned boolean [default: false]
+  trashed boolean [default: false]
+  icon string [default: '📄']
+  color string [default: 'white']
+  category string [default: 'NOTE']
+  tags "string[]" [note: 'Mảng nhãn']
+  createdAt date
+  updatedAt date
+}
+
+Ref: notes.parent_id > notes._id
