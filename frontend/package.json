@@ -1,0 +1,13 @@
+{
+  "name": "notespace-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NoteSpace frontend (HTML + Tailwind CSS + JavaScript)",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}
