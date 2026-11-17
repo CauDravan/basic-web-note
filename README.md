@@ -98,7 +98,7 @@ Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc rou
 -   [x] Settings
 -   [ ] Accessibility và điều hướng bàn phím
 -   [ ] Kiểm thử các luồng chính
--   [ ] Lighthouse và logging/tracking
+-   [x] Lighthouse và logging/tracking
 
 ## 3. Công nghệ
 
@@ -124,6 +124,8 @@ release.
 ``` text
 basic-web-note/
 ├─ backend/
+│  ├─ api/
+│  │  └─ index.js
 │  ├─ config/
 │  │  └─ db.js
 │  ├─ controllers/
@@ -142,26 +144,37 @@ basic-web-note/
 │  ├─ .env.example
 │  ├─ package-lock.json
 │  ├─ package.json
-│  └─ server.js
+│  ├─ server.js
+│  └─ vercel.json
 ├─ docs/
-│  └─ prototype.html
+│  ├─ lighthouse.jpg
+│  ├─ prototype.html
+│  └─ wireframe.pdf
 ├─ frontend/
 │  ├─ assets/
 │  ├─ css/
-│  │  ├─ responsive.css
-│  │  └─ style.css
+│  │  ├─ input.css
+│  │  ├─ style.css
+│  │  └─ tailwind.css
 │  ├─ js/
-│  │  ├─ ai.js
-│  │  ├─ app.js
+│  │  ├─ api.js
+│  │  ├─ layout.js
+│  │  ├─ note.js
 │  │  ├─ notes.js
 │  │  ├─ search.js
-│  │  └─ settings.js
+│  │  ├─ settings.js
+│  │  └─ theme-init.js
 │  ├─ pages/
-│  │  ├─ home.html
+│  │  ├─ note.html
 │  │  ├─ pinned.html
 │  │  ├─ settings.html
 │  │  └─ trash.html
-│  └─ index.html
+│  ├─ src/
+│  │  └─ input.css
+│  ├─ index.html
+│  ├─ package-lock.json
+│  ├─ package.json
+│  └─ tailwind.config.js
 ├─ .gitignore
 └─ README.md
 ```
