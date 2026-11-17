@@ -300,4 +300,5 @@
     if (f) { sessionStorage.removeItem("ns-flash"); NS.toast(f); }
   } catch (e) {}
   NS.load().then(() => NS.icons());
+  window.addEventListener("load", () => NS.icons());
 })();
