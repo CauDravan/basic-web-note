@@ -93,6 +93,7 @@
           title: "Untitled", content: "", parent_id: null, pinned: false,
           icon: "📄", color: "white", category: "NOTE", tags: [],
         });
+        if (window.track) window.track("create_note");
         location.href = NS.url.note(NS.id(n));
       } catch (e) {
         NS.toast("Could not create note: " + e.message);

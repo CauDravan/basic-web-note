@@ -175,6 +175,7 @@
     try {
       const r = await window.api.ai(action, text);
       aiRes = { action, result: r.result };
+      if (window.track) window.track("ai_" + action);
       showAI(`<div class="lb"><i data-lucide="sparkles"></i>AI · ${AI[action].label} (preview)</div>
         <div class="tx">${NS.esc(r.result)}</div>
         <div class="acts"><button class="btn btn-primary" type="button" data-ai="apply">${AI[action].apply}</button>
