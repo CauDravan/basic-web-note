@@ -1,294 +1,250 @@
 # NoteSpace
 
-Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, sắp xếp và
-quản lý ghi chú. Dự án được phát triển cho học phần CSB25022 -- Web
-Development.
+Ứng dụng ghi chú trực tuyến giúp người dùng tạo, chỉnh sửa, tìm kiếm, ghim và quản lý ghi chú, có trợ lý AI (Gemini) để tóm tắt, cải thiện văn phong và gợi ý tiêu đề. Dự án được phát triển cho học phần **CSB25022 – Web Design and Development** (VN-UK).
 
-> **Trạng thái hiện tại:** Backend đã được deploy lên Vercel và đã kiểm
-> tra thành công API đọc/tạo ghi chú. Frontend có project Vercel riêng;
-> việc tích hợp đầy đủ frontend với API và hoàn thiện các chức năng giao
-> diện vẫn đang được triển khai.
+| | |
+|---|---|
+| **Frontend** | https://basic-web-note-frontend.vercel.app |
+| **Backend API** | https://basic-web-note-backend.vercel.app/api |
+| **Repository** | https://github.com/<tên-tài-khoản>/basic-web-note |
+| **Video demo** | <!-- TODO: dán link YouTube (unlisted/public) --> |
 
-## 1. Links triển khai
+## 1. Tổng quan và công cụ sử dụng
 
-  ----------------------------------------------------------------------------
-  Thành phần      URL                                          Trạng thái
-  --------------- -------------------------------------------- ---------------
-  Frontend        https://basic-web-note-frontend.vercel.app   Đã có project
-                                                               deploy; cần
-                                                               kiểm tra giao
-                                                               diện và tích
-                                                               hợp API
+NoteSpace là ứng dụng web nhiều trang, giao diện lấy cảm hứng từ Notion (hỗ trợ chế độ sáng/tối). Frontend gọi REST API của backend; dữ liệu lưu trên MongoDB Atlas.
 
-  Backend         https://basic-web-note-backend.vercel.app    Đã deploy
+| Thành phần | Công nghệ |
+|---|---|
+| Frontend | HTML, JavaScript thuần, **Tailwind CSS** (CDN), Lucide Icons, font Inter |
+| Backend | Node.js, Express 5 |
+| Database | MongoDB Atlas, Mongoose |
+| AI | Google Gemini API (`generateContent`), gọi từ backend |
+| Hosting | Vercel (frontend và backend là hai project riêng) |
+| Thiết kế / quản lý | Wireframe (`docs/`), Git và GitHub (branch, Issue, Pull Request) |
 
-  API lấy danh    `GET /api/notes`                             Đã kiểm tra
-  sách notes                                                   thành công
+> **Về database:** brief nêu MySQL/PostgreSQL, nhóm sử dụng MongoDB Atlas và đã được giảng viên đồng ý.
 
-  API tạo note    `POST /api/notes`                            Đã kiểm tra
-                                                               thành công
-  ----------------------------------------------------------------------------
+## 2. Tính năng
 
-### Kết quả kiểm thử đã xác nhận
+### Ghi chú
+- [x] Tạo, xem, sửa, xóa ghi chú (CRUD đầy đủ qua API và giao diện)
+- [x] Trang soạn thảo với **tự động lưu** (hiển thị trạng thái Saving / Saved / Not saved) và lưu khi đóng tab
+- [x] Đổi icon, gắn tags (nhập cách nhau bằng dấu phẩy)
+- [x] Ghim / bỏ ghim, trang **Pinned** và mục Favorites trong sidebar
+- [x] **Trash**: chuyển vào thùng rác, khôi phục, xóa vĩnh viễn (có hộp xác nhận), Empty Trash
+- [x] Tìm kiếm theo tiêu đề, nội dung và tags
 
--   `GET /api/notes` trả về JSON với `success: true`.
--   `POST /api/notes` tạo note thử nghiệm và trả về `success: true`,
-    `Note created successfully`.
--   Gọi lại `GET /api/notes` trả về `count: 2`, `data: [...]`.
--   Backend sử dụng MongoDB Atlas thông qua Mongoose.
-
-Hai bản ghi hiện có là dữ liệu kiểm thử (`Connection Test` và một bản
-ghi khác). Nhóm nên kiểm tra/xóa dữ liệu thử nghiệm trước khi demo hoặc
-nghiệm thu.
-
-## 2. Chức năng và tiến độ
-
-Các mục dưới đây phân biệt giữa phần đã kiểm chứng và phần còn lại.
-Không đánh dấu chức năng hoàn thành chỉ vì đã có file hoặc route.
-
-### Quản lý ghi chú
-
--   [x] Backend: lấy danh sách ghi chú (`GET /api/notes`)
--   [x] Backend: lấy một ghi chú theo ID (`GET /api/notes/:id`)
--   [x] Backend: tạo ghi chú (`POST /api/notes`)
--   [x] Backend: cập nhật ghi chú (`PUT /api/notes/:id`)
--   [x] Backend: xóa ghi chú vĩnh viễn (`DELETE /api/notes/:id`)
--   [x] Frontend: hiển thị danh sách notes lấy từ API
--   [x] Frontend: tạo note từ giao diện
--   [x] Frontend: chỉnh sửa và tự động lưu note
--   [x] Frontend: xóa note từ giao diện
--   [x] Kiểm thử đầy đủ CRUD từ giao diện và tải lại trang
-
-### Trang con và điều hướng
-
--   [ ] Tạo trang con từ trang cha
--   [ ] Hiển thị cấu trúc phân cấp trong sidebar
--   [ ] Mở rộng/thu gọn danh sách trang con
--   [ ] Breadcrumbs và điều hướng về trang cha
--   [ ] Kiểm thử quan hệ cha-con sau khi tải lại trang
-
-### Tìm kiếm và sắp xếp
-
--   [x] Tìm kiếm theo tiêu đề
--   [ ] Tìm kiếm theo nội dung
--   [x] Ghim/bỏ ghim ghi chú
--   [x] Trang hiển thị ghi chú đã ghim
--   [ ] Tags và lọc theo tags
-
-### Trình soạn thảo
-
--   [x] Chỉnh sửa nội dung đoạn văn
--   [ ] Heading, to-do, bullet list
--   [ ] Quote và callout
--   [ ] Slash commands
--   [ ] Lưu và khôi phục nội dung editor qua API
-
-### AI Assistant
-
--   [ ] Tóm tắt nội dung
--   [ ] Cải thiện cách diễn đạt
--   [ ] Đề xuất tiêu đề
--   [ ] Tích hợp dịch vụ AI thực tế
--   [ ] Xử lý trạng thái loading/lỗi và cho phép xem trước kết quả
+### AI Assistant (Gemini)
+- [x] Tóm tắt ghi chú, cải thiện văn phong, gợi ý tiêu đề
+- [x] Xem trước kết quả, chỉ áp dụng khi bấm **Apply**; có trạng thái loading và báo lỗi
+- [x] API key chỉ nằm ở backend; tự chuyển sang model dự phòng khi model chính quá tải
 
 ### Giao diện và chất lượng
+- [x] Giao diện sáng/tối, lưu lựa chọn trong trình duyệt
+- [x] Responsive cho desktop, tablet và mobile (sidebar tự đóng trên màn hình nhỏ)
+- [x] Trang Settings (đổi theme, kiểm tra kết nối API)
+- [x] Tối ưu Lighthouse (xem mục 6)
+- [x] Google Analytics và Sentry (xem mục 6)
 
--   [x] Giao diện sáng/tối và lưu tùy chọn
--   [x] Responsive trên desktop, tablet và mobile
--   [x] Settings
--   [ ] Accessibility và điều hướng bàn phím
--   [ ] Kiểm thử các luồng chính
--   [x] Lighthouse và logging/tracking
+### Chưa thực hiện
+- Trang con (sub-page) và hiển thị phân cấp: schema đã có `parent_id` nhưng giao diện chưa hỗ trợ.
+- Trình soạn thảo dạng block, slash commands.
 
-## 3. Công nghệ
+### Ảnh chụp màn hình
 
-  Thành phần        Công nghệ
-  ----------------- ---------------------------------------------------
-  Frontend          HTML, CSS, JavaScript
-  Backend           Node.js, Express.js
-  Database          MongoDB Atlas
-  ODM               Mongoose
-  Hosting           Vercel (frontend và backend là hai project riêng)
-  Version control   Git và GitHub
+<!-- TODO: chụp ảnh và lưu vào docs/screenshots/ với đúng tên dưới đây -->
+| Home | Trang soạn note + AI |
+|---|---|
+| ![Home](docs/screenshots/home.png) | ![Note](docs/screenshots/note.png) |
 
-**Lưu ý học phần:** Project brief hiện nêu MySQL/PostgreSQL trong tiêu
-chí database, trong khi nhóm đang sử dụng MongoDB Atlas. Nhóm cần xác
-nhận với giảng viên rằng lựa chọn này được chấp nhận.
+| Pinned | Trash |
+|---|---|
+| ![Pinned](docs/screenshots/pinned.png) | ![Trash](docs/screenshots/trash.png) |
 
-## 4. Cấu trúc dự án
+| Settings (chế độ tối) | Mobile |
+|---|---|
+| ![Settings](docs/screenshots/settings-dark.png) | ![Mobile](docs/screenshots/mobile.png) |
 
-Cập nhật sơ đồ này khi cấu trúc repository thay đổi. Tên file/thư mục
-trong README cần được đối chiếu với repository thực tế trước mỗi lần
-release.
+## 3. Database (ERD)
 
-``` text
-basic-web-note/
-├─ backend/
-│  ├─ api/
-│  │  └─ index.js
-│  ├─ config/
-│  │  └─ db.js
-│  ├─ controllers/
-│  │  ├─ aiController.js
-│  │  └─ noteController.js
-│  ├─ middleware/
-│  │  └─ errorHandler.js
-│  ├─ models/
-│  │  └─ Note.js
-│  ├─ routes/
-│  │  ├─ aiRoutes.js
-│  │  └─ noteRoutes.js
-│  ├─ services/
-│  │  └─ aiService.js
-│  ├─ .env
-│  ├─ .env.example
-│  ├─ package-lock.json
-│  ├─ package.json
-│  ├─ server.js
-│  └─ vercel.json
-├─ docs/
-│  ├─ lighthouse.jpg
-│  ├─ prototype.html
-│  └─ wireframe.pdf
-├─ frontend/
-│  ├─ assets/
-│  ├─ css/
-│  │  ├─ input.css
-│  │  ├─ style.css
-│  │  └─ tailwind.css
-│  ├─ js/
-│  │  ├─ api.js
-│  │  ├─ layout.js
-│  │  ├─ note.js
-│  │  ├─ notes.js
-│  │  ├─ search.js
-│  │  ├─ settings.js
-│  │  └─ theme-init.js
-│  ├─ pages/
-│  │  ├─ note.html
-│  │  ├─ pinned.html
-│  │  ├─ settings.html
-│  │  └─ trash.html
-│  ├─ src/
-│  │  └─ input.css
-│  ├─ index.html
-│  ├─ package-lock.json
-│  ├─ package.json
-│  └─ tailwind.config.js
-├─ .gitignore
-└─ README.md
+Ứng dụng dùng một collection `notes`. Trường `parent_id` tham chiếu chính collection này để biểu diễn quan hệ trang cha – trang con.
+
+```mermaid
+erDiagram
+    NOTE ||--o{ NOTE : "parent_id (trang con)"
+    NOTE {
+        ObjectId _id PK
+        string title "mặc định Untitled"
+        string content
+        ObjectId parent_id FK "null nếu là trang gốc"
+        boolean pinned
+        boolean trashed
+        string icon
+        string color
+        string category
+        string_array tags
+        date createdAt
+        date updatedAt
+    }
 ```
 
-## 5. API ghi chú
+Mã nguồn sơ đồ cho dbdiagram.io nằm tại [`docs/erd.dbml`](docs/erd.dbml).
 
-Base URL production:
+**Seeder:** `backend/seeds/seed.js` nạp 8 ghi chú mẫu (có ghi chú đã ghim, ghi chú trong Trash, ghi chú có tags và một cặp cha – con). Xem cách chạy ở mục 4.
 
-``` text
-https://basic-web-note-backend.vercel.app/api
-```
+## 4. Hướng dẫn chạy
 
-  Method   Endpoint       Mục đích
-  -------- -------------- ---------------------
-  GET      `/notes`       Lấy danh sách notes
-  GET      `/notes/:id`   Lấy note theo ID
-  POST     `/notes`       Tạo note
-  PUT      `/notes/:id`   Cập nhật note
-  DELETE   `/notes/:id`   Xóa note vĩnh viễn
-
-Ví dụ tạo note:
-
-``` json
-{
-  "title": "My first note",
-  "content": "Note content",
-  "pinned": false,
-  "tags": []
-}
-```
-
-Các trường dữ liệu chính trong Note model gồm `title`, `content`,
-`parent_id`, `pinned`, `trashed`, `icon`, `color`, `category`, `tags`,
-cùng `createdAt` và `updatedAt`.
-
-## 6. Cài đặt local
+Yêu cầu: Node.js 20.19 trở lên và một database MongoDB (ví dụ MongoDB Atlas).
 
 ### Backend
 
-``` bash
+```bash
 cd backend
 npm install
 ```
 
-Tạo file `.env` trong thư mục `backend` và cấu hình biến môi trường:
+Tạo file `backend/.env` (tham khảo `backend/.env.example`):
 
-``` env
-MONGO_URI=your_mongodb_connection_string
+```env
 PORT=5000
-=======
+MONGO_URI=mongodb+srv://<user>:<password>@<cluster>/notespace
+GEMINI_API_KEY=<khóa lấy tại https://aistudio.google.com/apikey>
+# Tùy chọn:
+# GEMINI_MODEL=gemini-3.8-flash
+# GEMINI_FALLBACK_MODELS=gemini-3.7-flash,gemini-3.5-flash-lite
 ```
 
-Chạy backend:
+Chạy server và (tùy chọn) nạp dữ liệu mẫu:
 
-``` bash
-npm run dev
+```bash
+npm run dev                 # http://localhost:5000
+npm run seed                # chỉ nạp khi database đang trống
+npm run seed -- --reset     # XÓA toàn bộ ghi chú rồi nạp lại dữ liệu mẫu
 ```
 
-Backend local mặc định: `http://localhost:5000`.
-
-Không commit `.env`, connection string, API key hoặc secret lên GitHub.
-Chỉ commit `.env.example` với tên biến và giá trị mẫu không nhạy cảm.
+Không commit `.env`, connection string hay API key lên GitHub.
 
 ### Frontend
 
-Frontend hiện là HTML/CSS/JavaScript thuần. Có thể chạy bằng Live Server
-hoặc một static server. Đảm bảo `frontend/js/api.js` trỏ tới backend
-local khi phát triển local và backend production khi deploy.
+Frontend là HTML/JavaScript thuần. Mở `frontend/index.html` bằng Live Server (VS Code) hoặc một static server bất kỳ. Mặc định frontend gọi backend production; để dùng backend local, đổi `API_BASE` trong `frontend/js/api.js` thành `http://localhost:5000/api`.
 
-## 7. Git workflow
+### Triển khai lên Vercel
 
-Nhóm sử dụng nhánh riêng cho từng tính năng, không phát triển trực tiếp
-trên `main`.
+- Hai project riêng: `backend/` và `frontend/` (đặt **Root Directory** tương ứng).
+- Backend cần các biến môi trường `MONGO_URI` và `GEMINI_API_KEY`; sau khi thêm hoặc sửa biến phải **Redeploy**.
 
-Quy trình:
+## 5. Cấu trúc dự án
 
-1.  Cập nhật `main` trước khi bắt đầu.
-2.  Tạo feature branch từ `main`.
-3.  Chỉ commit các thay đổi thuộc phạm vi quản lý ghi chú.
-4.  Dùng commit message mô tả rõ thay đổi.
-5.  Push branch và mở Pull Request về `main`.
-6.  Thành viên khác review và kiểm tra trước khi merge.
-
-Ví dụ:
-
-``` bash
-git switch main
-git pull origin main
-git switch -c feature/note-management
+```text
+basic-web-note/
+├─ backend/
+│  ├─ api/index.js            # entry cho Vercel
+│  ├─ config/db.js            # kết nối MongoDB (có cache)
+│  ├─ controllers/            # noteController.js, aiController.js
+│  ├─ models/Note.js
+│  ├─ routes/                 # noteRoutes.js, aiRoutes.js
+│  ├─ seeds/seed.js
+│  ├─ services/aiService.js   # gọi Gemini
+│  ├─ server.js
+│  └─ vercel.json
+├─ docs/                      # wireframe, erd.dbml, screenshots, prototype.html
+├─ frontend/
+│  ├─ index.html              # Home
+│  ├─ pages/                  # note, pinned, trash, settings
+│  ├─ js/                     # api, layout, notes, note, search, settings, tailwind-config
+│  └─ css/style.css
+└─ README.md
 ```
 
-Commit message gợi ý:
+## 6. Tối ưu và theo dõi
 
-``` text
-feat(notes): connect notes list to backend API
-feat(notes): add note creation flow
-fix(notes): handle API errors when saving notes
-```
+### Lighthouse
 
-## 8. Phân công thành viên
+<!-- TODO: chạy Lighthouse (Chrome DevTools) trên bản deploy, điền điểm trước/sau và lưu ảnh vào docs/lighthouse/ -->
+| Chỉ số | Trước | Sau |
+|---|---|---|
+| Performance | — | — |
+| Accessibility | — | — |
+| Best Practices | — | — |
+| SEO | — | — |
 
-Nhóm cập nhật sau khi thống nhất phân công chính thức.
+Các cải tiến đã áp dụng: ghim phiên bản thư viện, nạp script bằng `defer`, preconnect font, meta description, nhãn `aria` cho các nút.
 
-| Thành viên | Công việc phụ trách |
-|---|---|
-| Đặng Vĩnh Quang | Chưa cập nhật
-| Lê Tôn Hải | Chưa cập nhật
-| Nguyễn Hữu Nhật | Chưa cập nhật
-| Nguyễn Trọng Tiến | Chưa cập nhật
+### Theo dõi và log lỗi
+- [ ] Google Analytics: <!-- TODO: ID đo lường -->
+- [ ] Sentry: <!-- TODO: mô tả -->
 
-## 9. Nhật ký phát triển
+## 7. API
 
-| Ngày | Thành viên | Công việc đã thực hiện | Ghi chú |
+Base URL: `https://basic-web-note-backend.vercel.app/api`
+
+| Method | Endpoint | Mục đích |
+|---|---|---|
+| GET | `/notes` | Lấy danh sách ghi chú |
+| GET | `/notes/:id` | Lấy một ghi chú |
+| POST | `/notes` | Tạo ghi chú |
+| PUT | `/notes/:id` | Cập nhật (title, content, tags, pinned, trashed, icon, …) |
+| DELETE | `/notes/:id` | Xóa vĩnh viễn |
+| POST | `/ai` | `{ "action": "summarize" \| "improve" \| "title", "text": "..." }` |
+
+## 8. Quy trình Git
+
+Mỗi tính năng làm trên một nhánh riêng, không commit trực tiếp vào `main`:
+
+1. Tạo Issue mô tả công việc.
+2. `git switch -c feature/<tên>` từ `main` mới nhất.
+3. Commit nhỏ, message theo dạng `feat(scope): ... (#số-issue)`, `fix(...)`, `chore(...)`.
+4. Push nhánh, mở Pull Request có dòng `Closes #số-issue`, merge vào `main`.
+
+## 9. Kế hoạch dự án
+
+<!-- TODO: chỉnh ngày cho khớp với hạn nộp thực tế -->
+| Mốc | Nội dung | Dự kiến | Trạng thái |
 |---|---|---|---|
-| 2026-11-09 | Đặng Vĩnh Quang | Kiểm tra và hoàn thiện kết nối backend với MongoDB Atlas. Xây dựng Note model, Note controller và Note routes. |  |
-| 2026-11-10 | Đặng Vĩnh Quang | Xây dựng frontend, Kết nối frontend với backend, Deploy lên Vercel |
+| M1 | Backend + API ghi chú, deploy Vercel | Tuần 1 | Hoàn thành |
+| M2 | Giao diện Tailwind: Home, Pinned, Trash, Note, Settings | Tuần 2 | Hoàn thành |
+| M3 | AI Assistant (Gemini) | Tuần 2 | Hoàn thành |
+| M4 | Seeder, ERD, wireframe, README | 15–17/11 | Đang thực hiện |
+| M5 | Lighthouse, Google Analytics, Sentry | 17–18/11 | Chưa bắt đầu |
+| M6 | Peer review và chỉnh sửa theo góp ý | 18–19/11 | Chưa bắt đầu |
+| M7 | Quay video demo, nộp bài | 19–20/11 | Chưa bắt đầu |
 
+## 10. Phân công thành viên
+
+<!-- TODO: kiểm tra và chỉnh lại cho đúng thực tế trước khi nộp -->
+| Thành viên | Công việc |
+|---|---|
+| Đặng Vĩnh Quang | Backend (model, controller, routes, deploy), frontend (toàn bộ giao diện), AI Assistant, seeder, ERD, README |
+| Lê Tôn Hải | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
+| Nguyễn Hữu Nhật | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
+| Nguyễn Trọng Tiến | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
+
+Lịch sử commit, Pull Request và Issue trên GitHub là bằng chứng cho đóng góp của từng thành viên.
+
+## 11. Peer review (UI/UX)
+
+<!-- TODO: điền sau khi trao đổi với các nhóm khác -->
+**Nhóm đã review:**
+
+| Nhóm | Điểm mạnh | Đề xuất | Link phản hồi |
+|---|---|---|---|
+| | | | |
+
+**Góp ý nhận được và cách xử lý:**
+
+| Góp ý | Quyết định | Thay đổi / lý do |
+|---|---|---|
+| | | |
+
+## 12. Thông tin thêm
+
+- Wireframe ban đầu của nhóm nằm trong `docs/`; giao diện đã triển khai bám theo wireframe, riêng phần phân cấp trang con chưa thực hiện.
+- Dữ liệu thử nghiệm trước đây nên được xóa hoặc thay bằng seeder trước khi demo.
+
+## 13. Nhật ký phát triển
+
+| Ngày | Thành viên | Công việc | Ghi chú |
+|---|---|---|---|
+| 2026-11-09 | Đặng Vĩnh Quang | Kết nối backend với MongoDB Atlas; xây dựng Note model, controller và routes | |
+| 2026-11-10 | Đặng Vĩnh Quang | Xây dựng frontend, kết nối frontend với backend, deploy lên Vercel | |
+| 2026-11-15 | Đặng Vĩnh Quang | Chuyển giao diện sang Tailwind (Home, Pinned, Trash, Note, Settings); tích hợp AI Assistant (Gemini); seeder và ERD | |
