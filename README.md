@@ -6,8 +6,8 @@
 |---|---|
 | **Frontend** | https://basic-web-note-frontend.vercel.app |
 | **Backend API** | https://basic-web-note-backend.vercel.app/api |
-| **Repository** | https://github.com/<tên-tài-khoản>/basic-web-note |
-| **Video demo** | <!-- TODO: dán link YouTube (unlisted/public) --> |
+| **Repository** | https://github.com/CauDravan/basic-web-note |
+| **Video demo** | chưa làm |
 
 ## 1. Tổng quan và công cụ sử dụng
 
@@ -22,7 +22,7 @@ NoteSpace là ứng dụng web nhiều trang, giao diện lấy cảm hứng t�
 | Hosting | Vercel (frontend và backend là hai project riêng) |
 | Thiết kế / quản lý | Wireframe (`docs/`), Git và GitHub (branch, Issue, Pull Request) |
 
-> **Về database:** brief nêu MySQL/PostgreSQL, nhóm sử dụng MongoDB Atlas và đã được giảng viên đồng ý.
+> **Về database:** brief nêu MySQL/PostgreSQL nhưng nhóm sử dụng MongoDB Atlas cho tiện hơn vì đã từng sử dụng từ các môn học khác.
 
 ## 2. Tính năng
 
@@ -49,21 +49,6 @@ NoteSpace là ứng dụng web nhiều trang, giao diện lấy cảm hứng t�
 ### Chưa thực hiện
 - Trang con (sub-page) và hiển thị phân cấp: schema đã có `parent_id` nhưng giao diện chưa hỗ trợ.
 - Trình soạn thảo dạng block, slash commands.
-
-### Ảnh chụp màn hình
-
-<!-- TODO: chụp ảnh và lưu vào docs/screenshots/ với đúng tên dưới đây -->
-| Home | Trang soạn note + AI |
-|---|---|
-| ![Home](docs/screenshots/home.png) | ![Note](docs/screenshots/note.png) |
-
-| Pinned | Trash |
-|---|---|
-| ![Pinned](docs/screenshots/pinned.png) | ![Trash](docs/screenshots/trash.png) |
-
-| Settings (chế độ tối) | Mobile |
-|---|---|
-| ![Settings](docs/screenshots/settings-dark.png) | ![Mobile](docs/screenshots/mobile.png) |
 
 ## 3. Database (ERD)
 
@@ -160,19 +145,18 @@ basic-web-note/
 
 ### Lighthouse
 
-<!-- TODO: chạy Lighthouse (Chrome DevTools) trên bản deploy, điền điểm trước/sau và lưu ảnh vào docs/lighthouse/ -->
-| Chỉ số | Trước | Sau |
+| Chỉ số | Điểm |
 |---|---|---|
-| Performance | — | — |
-| Accessibility | — | — |
-| Best Practices | — | — |
-| SEO | — | — |
+| Performance | 99 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | 100 |
 
 Các cải tiến đã áp dụng: ghim phiên bản thư viện, nạp script bằng `defer`, preconnect font, meta description, nhãn `aria` cho các nút.
 
 ### Theo dõi và log lỗi
-- [ ] Google Analytics: <!-- TODO: ID đo lường -->
-- [ ] Sentry: <!-- TODO: mô tả -->
+- [x] Google Analytics:
+- [x] Sentry:
 
 ## 7. API
 
@@ -198,24 +182,22 @@ Mỗi tính năng làm trên một nhánh riêng, không commit trực tiếp v�
 
 ## 9. Kế hoạch dự án
 
-<!-- TODO: chỉnh ngày cho khớp với hạn nộp thực tế -->
-| Mốc | Nội dung | Dự kiến | Trạng thái |
+| Mốc | Nội dung | Thời gian bắt đầu | Trạng thái |
 |---|---|---|---|
-| M1 | Backend + API ghi chú, deploy Vercel | Tuần 1 | Hoàn thành |
-| M2 | Giao diện Tailwind: Home, Pinned, Trash, Note, Settings | Tuần 2 | Hoàn thành |
-| M3 | AI Assistant (Gemini) | Tuần 2 | Hoàn thành |
-| M4 | Seeder, ERD, wireframe, README | 15–17/11 | Đang thực hiện |
-| M5 | Lighthouse, Google Analytics, Sentry | 17–18/11 | Chưa bắt đầu |
-| M6 | Peer review và chỉnh sửa theo góp ý | 18–19/11 | Chưa bắt đầu |
-| M7 | Quay video demo, nộp bài | 19–20/11 | Chưa bắt đầu |
+| M1 | Backend + API ghi chú, deploy Vercel | 6/11/2026 | Hoàn thành |
+| M2 | Giao diện Tailwind: Home, Pinned, Trash, Note, Settings | 10/11/2026 | Hoàn thành |
+| M3 | AI Assistant (Gemini) | 15/11/2026 | Hoàn thành |
+| M4 | Seeder, ERD, wireframe, README | 15/11/2026 | Hoàn thành |
+| M5 | Lighthouse, Google Analytics, Sentry | 17/11/2026 | Hoàn thành |
+| M6 | Peer review và chỉnh sửa theo góp ý | ? | Chưa bắt đầu |
+| M7 | Quay video demo, nộp bài | ? | Chưa bắt đầu |
 
 ## 10. Phân công thành viên
 
-<!-- TODO: kiểm tra và chỉnh lại cho đúng thực tế trước khi nộp -->
 | Thành viên | Công việc |
 |---|---|
 | Đặng Vĩnh Quang | Backend (model, controller, routes, deploy), frontend (toàn bộ giao diện), AI Assistant, seeder, ERD, README |
-| Lê Tôn Hải | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
+| Lê Tôn Hải | Wireframe |
 | Nguyễn Hữu Nhật | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
 | Nguyễn Trọng Tiến | Chưa ghi nhận đóng góp. Công việc đã được giao qua GitHub Issues |
 
@@ -248,3 +230,4 @@ Lịch sử commit, Pull Request và Issue trên GitHub là bằng chứng cho �
 | 2026-11-09 | Đặng Vĩnh Quang | Kết nối backend với MongoDB Atlas; xây dựng Note model, controller và routes | |
 | 2026-11-10 | Đặng Vĩnh Quang | Xây dựng frontend, kết nối frontend với backend, deploy lên Vercel | |
 | 2026-11-15 | Đặng Vĩnh Quang | Chuyển giao diện sang Tailwind (Home, Pinned, Trash, Note, Settings); tích hợp AI Assistant (Gemini); seeder và ERD | |
+| 2026-11-17 | Đặng Vĩnh Quang | Lighthouse vào README, GA và Sentry | |
