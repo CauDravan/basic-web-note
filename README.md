@@ -7,7 +7,7 @@
 | **Frontend** | https://basic-web-note-frontend.vercel.app |
 | **Backend API** | https://basic-web-note-backend.vercel.app/api |
 | **Repository** | https://github.com/CauDravan/basic-web-note |
-| **Video demo** | chưa làm |
+| **Video demo** | https://drive.google.com/file/d/1QXepVo5oPep12srIhnSFtuf6BPWbrGCk/view?usp=sharing |
 
 ## 1. Tổng quan và công cụ sử dụng
 
