@@ -1,8 +1,6 @@
-// NoteSpace API client
-// Frontend: basic-web-note-frontend.vercel.app | Backend: basic-web-note-backend.vercel.app
-// For local development change API_BASE to "http://localhost:5000/api".
-
-const API_BASE = "https://basic-web-note-backend.vercel.app/api";
+// NoteSpace API client. Đổi backend bằng biến môi trường NEXT_PUBLIC_API_BASE.
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://basic-web-note-backend.vercel.app/api";
 
 async function request(path, options = {}) {
   try {
@@ -32,15 +30,15 @@ async function request(path, options = {}) {
   }
 }
 
-window.api = {
+export const api = {
   base: API_BASE,
   getNotes: () => request("/notes"),
   getNote: (id) => request(`/notes/${encodeURIComponent(id)}`),
   createNote: (body) => request("/notes", { method: "POST", body: JSON.stringify(body) }),
-  // opts lets callers pass fetch options, e.g. { keepalive: true } when the page is closing
+  // opts: tuỳ chọn fetch, ví dụ { keepalive: true } khi trang đang đóng
   updateNote: (id, body, opts = {}) =>
     request(`/notes/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(body), ...opts }),
-  // action: "summarize" | "improve" | "title"; resolves to { action, result }
+  // action: "summarize" | "improve" | "title"; trả về { action, result }
   ai: (action, text) => request("/ai", { method: "POST", body: JSON.stringify({ action, text }) }),
   deleteNote: (id) => request(`/notes/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
