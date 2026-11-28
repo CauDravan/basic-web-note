@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wireframe bổ sung · NoteSpace</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #252928; background: #f3f3ef; font: 15px/1.6 system-ui, sans-serif; }
+    main { max-width: 1080px; margin: auto; padding: 32px 20px 48px; }
+    h1 { margin: 0 0 4px; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; }
+    p { margin: 0 0 18px; }
+    .frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    figure { min-width: 0; margin: 0; padding: 16px; border: 1px solid #c4c7c4; border-radius: 10px; background: #fff; }
+    figcaption { margin-bottom: 10px; font-weight: 700; }
+    .screen { overflow: hidden; display: grid; grid-template-columns: 118px minmax(0, 1fr); min-height: 238px; border: 1px solid #b5babc; border-radius: 6px; }
+    .nav { display: grid; align-content: start; gap: 3px; padding: 8px; border-right: 1px solid #c4c7c4; background: #f3f3ef; font-size: 11px; }
+    .nav span, .row, .chip { padding: 3px 5px; }
+    .nav strong { padding: 3px 5px; }
+    .active { border-radius: 3px; background: #dce2df; font-weight: 700; }
+    .panel { min-width: 0; padding: 0 10px 12px; font-size: 11px; overflow-wrap: anywhere; }
+    .bar { margin: 0 -10px 10px; padding: 4px 10px; border-bottom: 1px solid #c4c7c4; }
+    h2 { margin: 0 0 5px; font-size: 17px; }
+    .row { display: flex; justify-content: space-between; gap: 5px; border-bottom: 1px solid #c4c7c4; }
+    .row span:last-child { color: #4d5953; text-align: right; }
+    .chip { display: inline-block; margin: 4px 3px 0 0; border: 1px solid #b5babc; border-radius: 3px; }
+    .group { margin: 5px 0; padding: 6px; border: 1px solid #c4c7c4; border-radius: 4px; }
+    .behavior { margin: 10px 0 0; color: #4d5953; font-size: 13px; }
+    @media (max-width: 780px) { .frames { grid-template-columns: 1fr; } }
+    @media (max-width: 420px) { .screen { grid-template-columns: 92px minmax(0, 1fr); } }
+    @media print { body { background: #fff; } figure { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Wireframe bổ sung cho NoteSpace</h1>
+  <p>Bố cục các trang Next.js còn thiếu trong wireframe ban đầu. Ở màn hình rộng tối đa 760 px, nút cạnh tiêu đề mở sidebar dưới dạng lớp phủ.</p>
+  <div class="frames">
+    <figure>
+      <figcaption>Pinned <code>/pinned</code></figcaption>
+      <div class="screen">
+        <div class="nav" aria-label="Điều hướng"><strong>NoteSpace</strong><span>Search</span><span>Home</span><span class="active">Pinned</span><span>Trash</span><span>Settings</span><span>About</span></div>
+        <div class="panel">
+          <div class="bar">☰ Pinned</div><h2>Pinned</h2>
+          <div class="row"><strong>Favorites</strong><span>2 notes</span></div>
+          <div class="row"><span>Weekly reset</span><span>Bỏ ghim · Thùng rác</span></div>
+          <div class="row"><span>Ideas for the studio</span><span>Bỏ ghim · Thùng rác</span></div>
+        </div>
+      </div>
+      <p class="behavior">Chọn tên để mở ghi chú. Bỏ ghim sẽ chuyển ghi chú ra khỏi danh sách Pinned.</p>
+    </figure>
+    <figure>
+      <figcaption>Trash <code>/trash</code></figcaption>
+      <div class="screen">
+        <div class="nav" aria-label="Điều hướng"><strong>NoteSpace</strong><span>Search</span><span>Home</span><span>Pinned</span><span class="active">Trash</span><span>Settings</span><span>About</span></div>
+        <div class="panel">
+          <div class="bar">☰ Trash</div><h2>Trash</h2>
+          <div class="row"><strong>Deleted notes</strong><span>Empty Trash</span></div>
+          <div class="row"><span>Ý tưởng cũ (đã bỏ)</span><span>Khôi phục · Xóa</span></div>
+          <div class="group"><strong>Delete permanently?</strong><br><span class="chip">Cancel</span><span class="chip">Delete</span></div>
+        </div>
+      </div>
+      <p class="behavior">Chọn khôi phục để đưa ghi chú về Home. Hộp thoại xuất hiện khi người dùng chọn xóa vĩnh viễn.</p>
+    </figure>
+    <figure>
+      <figcaption>Settings <code>/settings</code></figcaption>
+      <div class="screen">
+        <div class="nav" aria-label="Điều hướng"><strong>NoteSpace</strong><span>Search</span><span>Home</span><span>Pinned</span><span>Trash</span><span class="active">Settings</span><span>About</span></div>
+        <div class="panel">
+          <div class="bar">☰ Settings</div><h2>Settings</h2>
+          <div class="group"><strong>Appearance</strong><br><span class="chip">Light</span><span class="chip">Dark</span></div>
+          <div class="group"><strong>Connection</strong><br>Địa chỉ API<br><span class="chip">Test connection</span></div>
+        </div>
+      </div>
+      <p class="behavior">Theme được lưu trong trình duyệt. Kết quả kiểm tra kết nối hiển thị dưới dạng thông báo.</p>
+    </figure>
+    <figure>
+      <figcaption>About <code>/about</code></figcaption>
+      <div class="screen">
+        <div class="nav" aria-label="Điều hướng"><strong>NoteSpace</strong><span>Search</span><span>Home</span><span>Pinned</span><span>Trash</span><span>Settings</span><span class="active">About</span></div>
+        <div class="panel">
+          <div class="bar">☰ About</div><h2>About NoteSpace</h2>
+          <div>Ứng dụng ghi chú · Nhóm 5 · CSB25022</div>
+          <div class="group">Tự động lưu, tìm kiếm và ghim<br>Xem trước gợi ý AI</div>
+          <span class="chip">Open notes</span><span class="chip">View project on GitHub</span>
+        </div>
+      </div>
+      <p class="behavior">Điều hướng từ sidebar, quay về Home hoặc mở mã nguồn dự án.</p>
+    </figure>
+  </div>
+</main>
+</body>
+</html>
