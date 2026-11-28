@@ -1,0 +1,25 @@
+Project notespace {
+  database_type: 'PostgreSQL'
+}
+
+Table notes {
+  _id varchar(24) [pk, note: '24 lowercase hexadecimal characters. Keeps existing note IDs.']
+  title text [not null, default: 'Untitled']
+  content text [not null, default: '']
+  parent_id varchar(24) [note: 'Optional parent. A note cannot be its own parent.']
+  pinned boolean [not null, default: false]
+  trashed boolean [not null, default: false]
+  icon text [not null, default: '📄']
+  color text [not null, default: 'white']
+  category text [not null, default: 'NOTE']
+  tags "text[]" [not null, default: `'{}'`]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (updated_at, _id) [name: 'notes_updated_at_idx']
+    parent_id [name: 'notes_parent_id_idx']
+  }
+}
+
+Ref: notes.parent_id > notes._id [delete: set null]

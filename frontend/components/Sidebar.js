@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, Search, Settings, SquarePen, Star, Trash2 } from "lucide-react";
+import { House, Info, Search, Settings, SquarePen, Star, Trash2 } from "lucide-react";
 import { useNotes } from "./NotesProvider";
 import { useUI } from "./UIProvider";
 import { byUpdated, matches, noteIcon, noteId, noteTitle } from "@/lib/utils";
@@ -16,7 +16,7 @@ const NAV = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { notes, ready, error, query, q, setQuery, createNote, creating } = useNotes();
-  const { setSidebarOpen } = useUI();
+  const { sidebarOpen, setSidebarOpen } = useUI();
 
   // Trên mobile, đóng sidebar sau khi chuyển trang
   useEffect(() => { if (window.innerWidth <= 760) setSidebarOpen(false); }, [pathname, setSidebarOpen]);
@@ -43,7 +43,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="sidebar fixed inset-y-0 left-0 z-30 flex w-60 flex-col border-r border-line bg-side p-1.5" aria-label="Sidebar">
+      <aside id="sidebar" inert={!sidebarOpen} className="sidebar fixed inset-y-0 left-0 z-30 flex w-60 flex-col border-r border-line bg-side p-1.5" aria-label="Sidebar">
         <div className="flex items-center gap-2 p-2 font-semibold">
           <span className="grid h-[22px] w-[22px] place-items-center rounded-[5px] bg-ink text-xs font-bold text-bg">N</span>NoteSpace
         </div>
@@ -59,6 +59,7 @@ export default function Sidebar() {
         </div>
         <button className="sb-item" type="button" disabled={creating} onClick={createNote}><SquarePen /><span>New note</span></button>
         {nav("/settings", Settings, "Settings")}
+        {nav("/about", Info, "About")}
       </aside>
       <div id="backdrop" className="fixed inset-0 z-20 bg-black/30" aria-hidden="true" onClick={() => setSidebarOpen(false)} />
     </>

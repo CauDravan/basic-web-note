@@ -203,6 +203,7 @@ export default function NoteEditor({ id }) {
     <>
       <Topbar icon={noteIcon(note)} title={shownTitle} status={status} actions={actions} />
       <main className="mx-auto w-full max-w-[760px] px-5 pb-40 pt-6 md:px-12 md:pt-10">
+        <h1 className="sr-only">Edit note</h1>
         <article>
           {ro && (
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-hov px-4 py-3">
