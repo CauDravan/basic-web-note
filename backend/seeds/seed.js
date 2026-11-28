@@ -1,20 +1,16 @@
 // Tạo dữ liệu mẫu cho NoteSpace.
-//   npm run seed            -> chỉ thêm dữ liệu khi collection "notes" đang trống
+//   npm run seed            -> chỉ thêm dữ liệu khi bảng "notes" đang trống
 //   npm run seed -- --reset -> XÓA TOÀN BỘ ghi chú hiện có rồi nạp lại dữ liệu mẫu
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import Note from "../models/Note.js";
-
-dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.env") });
+import "dotenv/config";
+import { getDB, transaction } from "../config/db.js";
+import { insertNote, newNoteId } from "../models/Note.js";
 
 const reset = process.argv.includes("--reset");
 const daysAgo = (d, h = 0) => new Date(Date.now() - d * 86400000 - h * 3600000);
 
-const parentId = new mongoose.Types.ObjectId();
+const parentId = newNoteId();
 const note = (o) => ({
-  _id: new mongoose.Types.ObjectId(),
+  _id: newNoteId(),
   title: "Untitled",
   content: "",
   parent_id: null,
@@ -24,7 +20,6 @@ const note = (o) => ({
   color: "white",
   category: "NOTE",
   tags: [],
-  __v: 0,
   ...o,
 });
 
@@ -71,28 +66,17 @@ const seedNotes = [
   }),
 ];
 
-async function run() {
-  if (!process.env.MONGO_URI) throw new Error("Thiếu MONGO_URI. Hãy tạo file backend/.env (xem .env.example).");
-  await mongoose.connect(process.env.MONGO_URI);
-
-  const existing = await Note.countDocuments();
-  if (existing > 0 && !reset) {
-    console.log(`Đã có ${existing} ghi chú trong database, bỏ qua seed. Dùng "npm run seed -- --reset" để xóa và nạp lại.`);
-    return;
-  }
-  if (reset) {
-    const { deletedCount } = await Note.deleteMany({});
-    console.log(`Đã xóa ${deletedCount} ghi chú cũ.`);
-  }
-
-  // Dùng collection trực tiếp để giữ nguyên createdAt/updatedAt đã đặt ở trên.
-  const { insertedCount } = await Note.collection.insertMany(seedNotes);
-  console.log(`Đã thêm ${insertedCount} ghi chú mẫu.`);
+const db = getDB();
+try {
+  const inserted = await transaction(async (client) => {
+    await client.query("LOCK TABLE notes IN SHARE ROW EXCLUSIVE MODE");
+    const { rowCount } = await client.query("SELECT 1 FROM notes LIMIT 1");
+    if (rowCount && !reset) return 0;
+    if (reset) await client.query("DELETE FROM notes");
+    for (const note of seedNotes) await insertNote(client, note);
+    return seedNotes.length;
+  });
+  console.log(inserted ? `Đã thêm ${inserted} ghi chú mẫu.` : "Bảng notes đã có dữ liệu, bỏ qua seed.");
+} finally {
+  await db.end();
 }
-
-run()
-  .catch((err) => {
-    console.error("Seed thất bại:", err.message);
-    process.exitCode = 1;
-  })
-  .finally(() => mongoose.disconnect());
