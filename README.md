@@ -3,6 +3,7 @@
 NoteSpace là ứng dụng ghi chú của Nhóm 5, lớp Basic 2, học phần **CSB25022 – Web Design and Development**. Người dùng có thể tạo, tìm kiếm, ghim và khôi phục ghi chú, hoặc xem trước gợi ý từ trợ lý Gemini.
 
 - [Mã nguồn và lịch sử dự án](https://github.com/CauDravan/basic-web-note)
+- [Video demo Next.js do thành viên nhóm quay](docs/evidence/notespace-demo.mp4)
 - [Kết quả kiểm thử](docs/testing.md)
 
 ## 1. Công nghệ và thiết kế
@@ -119,7 +120,7 @@ frontend/
   app/                 Các trang Next.js và CSS dùng chung
   components/          Sidebar, danh sách, trình soạn thảo và Settings
   lib/                 API client và hàm dùng chung
-docs/                  Wireframe, ERD, ảnh và báo cáo
+docs/                  Wireframe, ERD, ảnh, báo cáo và video demo
 ```
 
 ## 6. Kiểm thử, tối ưu và theo dõi
@@ -128,7 +129,7 @@ docs/                  Wireframe, ERD, ảnh và báo cáo
 
 ### Responsive
 
-| Desktop 1440 × 960 | Tablet 768 × 1024 | Mobile 390 × 844 |
+| Desktop | Tablet 768 × 1024 | Mobile 390 × 844 |
 | --- | --- | --- |
 | <a href="docs/screenshots/nextjs/home-desktop.png"><img src="docs/screenshots/nextjs/home-desktop.png" width="360" alt="Home trên desktop"></a> | <a href="docs/screenshots/nextjs/home-tablet.png"><img src="docs/screenshots/nextjs/home-tablet.png" width="170" alt="Home trên tablet"></a> | <a href="docs/screenshots/nextjs/home-mobile.png"><img src="docs/screenshots/nextjs/home-mobile.png" width="135" alt="Home trên mobile"></a> |
 
@@ -170,7 +171,7 @@ Bằng chứng theo dõi của bản triển khai trước gồm [Google Analyti
 | M5 | Chuyển frontend sang Next.js | 27/11/2026 | Đã merge ở `b465afc` |
 | M6 | About, PostgreSQL, kiểm thử và bằng chứng Next.js | 28/11/2026 | Có trong nhánh sửa |
 | M7 | Góp ý hai nhóm và phản hồi cho NoteSpace | Đề xuất trước hạn nộp 1 ngày | Chờ trao đổi |
-| M8 | Rà soát bản triển khai, tự quay video demo và nộp bài | Theo hạn giảng viên công bố | Chờ nhóm thực hiện |
+| M8 | Rà soát bản triển khai, tự quay video demo và nộp bài | Theo hạn giảng viên công bố | Đã quay video, còn rà soát và nộp bài |
 
 ## 10. Phân công thành viên
 

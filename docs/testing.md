@@ -29,7 +29,9 @@ Suite API đạt **4/4** theo Node test runner, gồm một nhóm kiểm thử v
 | Đổi sang Dark, tải lại, dùng Test connection, mở About rồi quay về Home | Theme được lưu, kiểm tra được kết nối và điều hướng đúng | Đạt. Sidebar đánh dấu About là trang hiện tại |
 | Đổi kích thước khung nhìn và mở sidebar mobile | Trang không tràn ngang, sidebar mở và đóng đúng | Đạt ở 1440 × 960, 768 × 1024 và 390 × 844. Đã mở Pinned và trình soạn qua sidebar mobile |
 
-Ảnh thực tế gồm [desktop](screenshots/nextjs/home-desktop.png), [tablet](screenshots/nextjs/home-tablet.png), [mobile](screenshots/nextjs/home-mobile.png), [sidebar mobile](screenshots/nextjs/sidebar-mobile.png) và [trình soạn mobile](screenshots/nextjs/editor-mobile.png).
+Ảnh thực tế ở giao diện tối gồm [desktop](screenshots/nextjs/home-desktop.png), [tablet](screenshots/nextjs/home-tablet.png), [mobile](screenshots/nextjs/home-mobile.png), [sidebar mobile](screenshots/nextjs/sidebar-mobile.png) và [trình soạn mobile](screenshots/nextjs/editor-mobile.png). Thanh DevTools trong ảnh hiển thị 768 × 1024 trên tablet và 390 × 844 trên mobile.
+
+[Video demo do thành viên nhóm quay](evidence/notespace-demo.mp4) dài khoảng 37 giây, ghi lại chỉnh sửa và ghim ghi chú, thao tác với Trash, Settings và About.
 
 ## Lighthouse
 
