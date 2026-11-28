@@ -19,7 +19,7 @@ body.sb-closed .main-content{margin-left:0}
 #backdrop{display:none}
 @media (max-width:760px){
   .main-content{margin-left:0!important}
-  .sidebar{box-shadow:0 0 30px #0004}
+  body:not(.sb-closed) .sidebar{box-shadow:0 0 30px #0004}
   body:not(.sb-closed) #backdrop{display:block}
 }
 

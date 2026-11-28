@@ -1,7 +1,7 @@
 "use client";
 // Danh sách ghi chú cho Home / Pinned / Trash.
 import { useMemo } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Plus, Star, Trash2, Undo2 } from "lucide-react";
 import { useNotes } from "./NotesProvider";
 import { useUI } from "./UIProvider";
@@ -22,7 +22,6 @@ function IconBtn({ label, onClick, danger, children }) {
 }
 
 export default function NoteList({ mode }) {
-  const router = useRouter();
   const { notes, ready, error, q, load, update, destroy, createNote, creating } = useNotes();
   const { toast, confirm } = useUI();
 
@@ -35,7 +34,6 @@ export default function NoteList({ mode }) {
   }, [notes, q, mode]);
 
   const hasTrashed = notes.some((n) => n.trashed);
-  const open = (n) => router.push(`/notes/${encodeURIComponent(noteId(n))}`);
 
   async function pin(n) {
     if (await update(n, { pinned: !n.pinned })) toast(n.pinned ? "Removed from favorites." : "Added to favorites.");
@@ -78,15 +76,16 @@ export default function NoteList({ mode }) {
     body = list.map((n) => {
       const preview = (n.content || "").replace(/\s+/g, " ").trim().slice(0, 90);
       return (
-        <article key={noteId(n)} tabIndex={0}
-          className="note-row flex cursor-pointer items-center gap-2.5 border-b border-line px-2.5 py-2 hover:bg-hov"
-          onClick={() => open(n)}
-          onKeyDown={(e) => { if (e.key === "Enter" && e.target === e.currentTarget) open(n); }}>
-          <span className="w-5 flex-none text-center">{noteIcon(n)}</span>
-          <span className="min-w-0 flex-1 truncate font-medium">{noteTitle(n)}</span>
-          <span className="hidden min-w-0 max-w-[40%] truncate text-[13px] text-mut2 md:block">{preview}</span>
-          <span className="whitespace-nowrap text-xs text-mut">{fmtDate(n.updatedAt)}</span>
-          <span className="row-actions flex gap-0.5">
+        <article key={noteId(n)}
+          className="note-row relative flex items-center gap-2.5 border-b border-line px-2.5 py-2 hover:bg-hov">
+          <span className="w-5 flex-none text-center" aria-hidden="true">{noteIcon(n)}</span>
+          <Link href={`/notes/${encodeURIComponent(noteId(n))}`} prefetch={false}
+            className="min-w-0 flex-1 truncate font-medium after:absolute after:inset-0">
+            {noteTitle(n)}
+          </Link>
+          <span className="hidden min-w-0 max-w-[40%] truncate text-[13px] text-mut2 lg:block">{preview}</span>
+          <span className="hidden whitespace-nowrap text-xs text-mut sm:inline">{fmtDate(n.updatedAt)}</span>
+          <span className="row-actions relative flex gap-0.5">
             {mode === "trash" ? (
               <>
                 <IconBtn label="Restore" onClick={() => restore(n)}><Undo2 /></IconBtn>
